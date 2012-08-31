@@ -1,0 +1,8 @@
+# This file provides instructions for packaging.
+
+`Scalar-Does`
+	perl_version_from m`Scalar::Does`;
+	version_from      m`Scalar::Does`;
+	readme_from       m`Scalar::Does`;
+	test_requires     p`Test::More 0.61`  .
+

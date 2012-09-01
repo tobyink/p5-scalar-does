@@ -9,13 +9,24 @@ BEGIN {
 	$Scalar::Does::VERSION   = '0.001';
 }
 
-use IO::Detect qw( is_filehandle );
-use overload qw();
-use Scalar::Util qw( blessed reftype );
+use Carp             0     qw( confess );
+use IO::Detect       0.001 qw( is_filehandle );
+use overload         0     qw();
+use namespace::clean 0.19  qw();
+use Scalar::Util     1.20  qw( blessed reftype );
+
 use Sub::Exporter -setup => {
-	exports => [qw( does overloads blessed )],
+	exports => [
+		qw( does overloads blessed reftype ),
+		custom => \&_build_custom,
+	],
 	groups  => {
 		default => [qw( does )],
+	},
+	installer => sub {
+		my @subs = grep { !ref } @{ $_[1] };
+		namespace::clean->import( -cleanee => $_[0]{into}, @subs );
+		goto \&Sub::Exporter::default_installer;
 	},
 };
 
@@ -33,17 +44,17 @@ my %ROLES = (
 	IO       => \&is_filehandle,
 	VSTRING  => sub { reftype($_) eq 'VSTRING' or reftype($_) eq 'VSTRING' },
 	Regexp   => sub { reftype($_) eq 'Regexp'  or overloads($_, q[qr]) },
+	q[bool]  => sub { !blessed($_) or !overload::Overloaded($_) or overloads($_, q[bool]) },
+	q[""]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[""]) },
+	q[0+]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[0+]) },
+	q[<>]    => sub { overloads($_, q[<>])     or is_filehandle($_) },
+	q[~~]    => sub { overloads($_, q[~~])     or not blessed($_) },
 	q[${}]   => 'SCALAR',
 	q[@{}]   => 'ARRAY',
 	q[%{}]   => 'HASH',
 	q[&{}]   => 'CODE',
 	q[*{}]   => 'GLOB',
-	q[bool]  => sub { !blessed($_) or !overload::Overloaded($_) or overloads($_, q[bool]) },
-	q[""]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[""]) },
-	q[0+]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[0+]) },
-	q[qr]    => sub { reftype($_) eq 'Regexp'  or overloads($_, q[qr]) },
-	q[<>]    => sub { overloads($_, q[<>])     or is_filehandle($_) },
-	q[~~]    => sub { overloads($_, q[~~])     or not blessed($_) },
+	q[qr]    => 'Regexp',
 );
 
 while (my ($k, $v) = each %ROLES)
@@ -54,7 +65,7 @@ sub overloads ($;$)
 	my ($thing, $role) = @_;
 	
 	# curry (kinda)
-	return sub { overloads(shift, $thing) } if @_ < 2;
+	return sub { overloads($_[0], $thing) } if @_==1;
 	
 	goto \&overload::Method;
 }
@@ -64,7 +75,10 @@ sub does ($;$)
 	my ($thing, $role) = @_;
 	
 	# curry (kinda)
-	return sub { does(shift, $thing) } if @_ < 2;
+	return sub { does($_[0], $thing) } if @_==1;
+	
+#	use Data::Dumper;
+#	warn Dumper(@_);
 	
 	if (my $test = $ROLES{$role})
 	{
@@ -84,6 +98,21 @@ sub does ($;$)
 	}
 	
 	return;
+}
+
+use constant MISSING_ROLE_MESSAGE => (
+	"Please supply a '-role' argument when exporting custom functions, died"
+);
+
+sub _build_custom
+{
+	my ($class, $name, $arg) = @_;
+	my $role = $arg->{ -role } or confess MISSING_ROLE_MESSAGE;
+	
+	return sub (;$) {
+		push @_, $role;
+		goto \&does;
+	}
 }
 
 "it does"
@@ -114,6 +143,8 @@ Or the shiny Perl 5.10+ syntax:
 It has long been noted that Perl would benefit from a C<< does() >> built-in.
 A check that C<< ref($thing) eq 'ARRAY' >> doesn't allow you to accept an
 object that uses overloading to provide an array-like interface.
+
+=head2 Functions
 
 This module provides a prototype C<< does() >> function which can be used in
 as a standard function, or using a pseudo-infix notation (via smart match).
@@ -212,7 +243,42 @@ be used as roles. (But not L<Moose>'s type constraint strings.)
 
 =back
 
+=item C<< overloads($scalar, $role) >>
+
+A function C<overloads> (which just checks overloading) is also available.
+It can be called using the same syntax as C<does>.
+
+=item C<< blessed($scalar) >>, C<< reftype($scalar) >>
+
+For convenience, this module can also re-export these functions from
+L<Scalar::Util>.
+
 =back
+
+=head2 Export
+
+By default, only C<does> is exported. This module uses L<Sub::Exporter>, so
+functions can be renamed:
+
+  use Scalar::Does does => { -as => 'performs_role' };
+
+Scalar::Does also plays some tricks with L<namespace::clean> to ensure that
+any functions it exports to your namespace are cleaned up when you're finished
+with them. This ensures that if you're writing object-oriented code C<does>
+and C<overloads> will not be left hanging around as methods of your classes.
+L<Moose::Object> provides a C<does> method, and you should be able to use
+Scalar::Does without interfering with that.
+
+=head2 Custom Role Checks
+
+  use Scalar::Does
+    custom => { -as => 'does_array', -role => 'ARRAY' },
+    custom => { -as => 'does_hash',  -role => 'HASH'  };
+  
+  does_array($thing);
+  does_hash($thing);
+  $thing ~~does_array;
+  $thing ~~does_hash;
 
 =head1 BUGS
 
@@ -221,9 +287,9 @@ L<http://rt.cpan.org/Dist/Display.html?Queue=Scalar-Does>.
 
 =head1 SEE ALSO
 
-L<Scalar::Util>.
+L<Scalar::Util>, L<Moose::Role>, L<MooseX::Types>.
 
-L<http://perldoc.perl.org/5.10.0/perltodo.html#A-does()-built-in>
+L<http://perldoc.perl.org/5.10.0/perltodo.html#A-does()-built-in>.
 
 =head1 AUTHOR
 

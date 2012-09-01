@@ -10,20 +10,30 @@ use Scalar::Does;
 }
 
 my %tests = (
+	ARRAY => [
+		[],
+		does   => [qw( ARRAY @{} )],
+		doesnt => [qw( HASH %{} )],
+	],
+	HASH => [
+		+{},
+		does   => [qw( HASH %{} )],
+		doesnt => [qw( ARRAY @{} )],
+	],
 	SCALAR => [
 		\"Hello World",
 		does   => [qw( SCALAR ${} )],
-		doesnt => [qw( ARRAY HASH @{} %{} CODE Regexp Foo::Bar UNIVERSAL )]
+		doesnt => [qw( ARRAY HASH @{} %{} CODE Regexp Foo::Bar UNIVERSAL )],
 	],
 	CODE => [
 		sub { 1 },
 		does   => [qw( CODE &{} )],
-		doesnt => [qw( SCALAR @{} UNIVERSAL )]
+		doesnt => [qw( SCALAR @{} UNIVERSAL )],
 	],
 	Blessed_CODE => [
 		bless(sub { 1 } => 'Foo::Bar'),
 		does   => [qw( CODE &{} Foo::Bar UNIVERSAL )],
-		doesnt => [qw( SCALAR @{} Regexp )]
+		doesnt => [qw( SCALAR @{} Regexp )],
 	],
 	Overloaded_Object => [
 		Local::Does::Array->new,
@@ -33,12 +43,12 @@ my %tests = (
 	STDOUT => [
 		\*STDOUT,
 		does   => [qw( IO <> GLOB *{} )],
-		doesnt => [qw( SCALAR @{} Regexp CODE &{} Foo::Bar UNIVERSAL )]
+		doesnt => [qw( SCALAR @{} Regexp CODE &{} Foo::Bar UNIVERSAL )],
 	],
 	Lvalue => [
 		\(substr($INC[0], 0, 1)),
 		does   => [qw( LVALUE )],
-		doesnt => [qw( SCALAR @{} Regexp CODE &{} Foo::Bar UNIVERSAL IO GLOB )]
+		doesnt => [qw( SCALAR @{} Regexp CODE &{} Foo::Bar UNIVERSAL IO GLOB )],
 	],
 );
 

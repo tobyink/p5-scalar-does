@@ -1,4 +1,4 @@
-use Test::More 'no_plan';
+use Test::More;
 use Scalar::Does;
 
 {
@@ -54,3 +54,5 @@ foreach my $name (sort keys %tests)
 		ok(!does($value, $tc), "$name doesn't $tc");
 	}
 }
+
+done_testing();

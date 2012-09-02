@@ -9,9 +9,12 @@ BEGIN {
 	$Scalar::Does::VERSION   = '0.001';
 }
 
+use overload ();
+#	q[~~]    => sub { shift->(@_) },
+#	fallback => 1;
+
 use Carp             0     qw( confess );
 use IO::Detect       0.001 qw( is_filehandle );
-use overload         0     qw();
 use namespace::clean 0.19  qw();
 use Scalar::Util     1.20  qw( blessed reftype );
 
@@ -24,8 +27,10 @@ use Sub::Exporter -setup => {
 		default => [qw( does )],
 	},
 	installer => sub {
-		my @subs = grep { !ref } @{ $_[1] };
-		namespace::clean->import( -cleanee => $_[0]{into}, @subs );
+		namespace::clean->import(
+			-cleanee => $_[0]{into},
+			grep { !ref } @{ $_[1] },
+		);
 		goto \&Sub::Exporter::default_installer;
 	},
 };
@@ -70,6 +75,7 @@ sub overloads ($;$)
 	goto \&overload::Method;
 }
 
+use Data::Dumper;
 sub does ($;$)
 {
 	my ($thing, $role) = @_;
@@ -77,7 +83,6 @@ sub does ($;$)
 	# curry (kinda)
 	return sub { does($_[0], $thing) } if @_==1;
 	
-#	use Data::Dumper;
 #	warn Dumper(@_);
 	
 	if (my $test = $ROLES{$role})
@@ -131,13 +136,6 @@ Scalar::Does - like ref() but useful
   does($object, 'HASH');          # true
   does($object, 'ARRAY');         # false
 
-Or the shiny Perl 5.10+ syntax:
-
-  $object ~~does 'Some::Class'    # true
-  $object ~~does '%{}'            # true
-  $object ~~does 'HASH'           # true
-  $object ~~does 'ARRAY'          # false
-
 =head1 DESCRIPTION
 
 It has long been noted that Perl would benefit from a C<< does() >> built-in.
@@ -145,9 +143,6 @@ A check that C<< ref($thing) eq 'ARRAY' >> doesn't allow you to accept an
 object that uses overloading to provide an array-like interface.
 
 =head2 Functions
-
-This module provides a prototype C<< does() >> function which can be used in
-as a standard function, or using a pseudo-infix notation (via smart match).
 
 =over
 
@@ -246,7 +241,6 @@ be used as roles. (But not L<Moose>'s type constraint strings.)
 =item C<< overloads($scalar, $role) >>
 
 A function C<overloads> (which just checks overloading) is also available.
-It can be called using the same syntax as C<does>.
 
 =item C<< blessed($scalar) >>, C<< reftype($scalar) >>
 
@@ -277,8 +271,6 @@ Scalar::Does without interfering with that.
   
   does_array($thing);
   does_hash($thing);
-  $thing ~~does_array;
-  $thing ~~does_hash;
 
 =head1 BUGS
 

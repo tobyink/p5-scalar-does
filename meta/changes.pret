@@ -4,3 +4,13 @@
 	issued  2012-09-02;
 	label   "Initial release".
 
+`Scalar-Does 0.002 cpan:TOBYINK`
+	issued  2012-09-19;
+	changeset [
+		item "Export constants for pre-defined roles."^^Addition;
+		item "Better documentation for interaction with Moose roles and type constraints."^^Documentation;
+		item "Document relationship with Object::DOES."^^Documentation;
+		item "Minor improvements."^^Documentation;
+		item "Export looks_like_number."^^Addition;
+		item "Clarify that does($thing, '0+') is not the same as looks_like_number."^^Documentation;
+	].

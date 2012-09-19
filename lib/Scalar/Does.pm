@@ -89,15 +89,12 @@ sub overloads ($;$)
 	goto \&overload::Method;
 }
 
-use Data::Dumper;
 sub does ($;$)
 {
 	my ($thing, $role) = @_;
 	
 	# curry (kinda)
 	return sub { does(shift, $thing) } if @_==1;
-	
-#	warn Dumper(@_);
 	
 	if (my $test = $ROLES{$role})
 	{

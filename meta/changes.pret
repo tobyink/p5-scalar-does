@@ -13,4 +13,6 @@
 		item "Minor improvements."^^Documentation;
 		item "Export looks_like_number."^^Addition;
 		item "Clarify that does($thing, '0+') is not the same as looks_like_number."^^Documentation;
+		item "Correctly determine Regexp role."^^Bugfix;
+		item "Improved test suite with 100% Devel::Cover coverage."^^Packaging;
 	].

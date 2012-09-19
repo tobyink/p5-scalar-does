@@ -16,3 +16,9 @@
 		item "Correctly determine Regexp role."^^Bugfix;
 		item "Improved test suite with 100% Devel::Cover coverage."^^Packaging;
 	].
+
+`Scalar-Does 0.003 cpan:TOBYINK`
+	issued  2012-09-19;
+	changeset [
+		item "Ensure t/99smartmatch.t is skipped properly on Perl < 5.10.1."^^Bugfix;
+	].

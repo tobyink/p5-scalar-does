@@ -2,7 +2,7 @@
 #
 
 use Test::More;
-BEGIN { $] >= 5.10.1 or plan skip_all => "Perl 5.10.1+" };
+BEGIN { $] >= 5.010001 or plan skip_all => "Perl 5.10.1+" };
 
 plan tests => 4;
 

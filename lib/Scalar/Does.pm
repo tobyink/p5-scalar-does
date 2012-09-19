@@ -7,7 +7,7 @@ use utf8;
 our %_CONSTANTS;
 BEGIN {
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::VERSION   = '0.002';
+	$Scalar::Does::VERSION   = '0.003';
 	
 	%_CONSTANTS = (
 		BOOLEAN    => q[bool],

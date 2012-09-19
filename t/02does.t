@@ -9,6 +9,23 @@ use Scalar::Does;
 	sub DOES  { return 1 if $_[1] eq 'Monkey'; shift->SUPER::DOES(@_) }
 }
 
+{
+	package Local::Does::Not;
+	sub new   { bless +{ array=>[] }, pop };
+	sub can   { return if $_[1] eq 'DOES'; shift->SUPER::can(@_) }
+}
+
+{
+	package Cruddy::Role;
+	sub new   { bless +{ array=>[] }, pop };
+}
+
+{
+	package Permissive::Role;
+	sub new   { bless +{ array=>[] }, pop };
+	sub check { 1 }
+}
+
 my %tests = (
 	ARRAY => [
 		[],
@@ -38,7 +55,12 @@ my %tests = (
 	Overloaded_Object => [
 		Local::Does::Array->new,
 		does   => [qw( ARRAY @{} HASH %{} Local::Does::Array UNIVERSAL Monkey )],
-		doesnt => [qw( CODE bool "" )],
+		doesnt => [qw( CODE bool "" Gorilla )],
+	],
+	Overloaded_Class => [
+		'Local::Does::Array',
+		does   => [qw( bool "" ARRAY @{} Local::Does::Array UNIVERSAL Monkey )],
+		doesnt => [qw( CODE Gorilla HASH %{} )],
 	],
 	STDOUT => [
 		\*STDOUT,
@@ -50,6 +72,27 @@ my %tests = (
 		does   => [qw( LVALUE )],
 		doesnt => [qw( SCALAR @{} Regexp CODE &{} Foo::Bar UNIVERSAL IO GLOB )],
 	],
+	Object_without_DOES_method => [
+		Local::Does::Not->new,
+		does   => [qw( HASH )],
+		doesnt => [qw( Local::Does::Not )],
+	],
+	Class_without_DOES_method => [
+		'Local::Does::Not',
+		does   => [qw( )],
+		doesnt => [qw( Local::Does::Not HASH )],
+	],
+);
+
+
+
+my @uncheck = (
+	Cruddy::Role->new,
+	[],
+	'FlibbleSocks',
+);
+my @check = (
+	Permissive::Role->new,
 );
 
 foreach my $name (sort keys %tests)
@@ -63,6 +106,9 @@ foreach my $name (sort keys %tests)
 	foreach my $tc (@{ $cases{doesnt} }) {
 		ok(!does($value, $tc), "$name doesn't $tc");
 	}
+	
+	ok( does($value, $_), "$name does $_") for @check;
+	ok(!does($value, $_), "$name doesn't do uncheckable role $_") for @uncheck;
 }
 
 done_testing();

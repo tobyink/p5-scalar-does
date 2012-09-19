@@ -84,7 +84,7 @@ sub overloads ($;$)
 	my ($thing, $role) = @_;
 	
 	# curry (kinda)
-	return sub { overloads($_[0], $thing) } if @_==1;
+	return sub { overloads(shift, $thing) } if @_==1;
 	
 	goto \&overload::Method;
 }
@@ -95,7 +95,7 @@ sub does ($;$)
 	my ($thing, $role) = @_;
 	
 	# curry (kinda)
-	return sub { does($_[0], $thing) } if @_==1;
+	return sub { does(shift, $thing) } if @_==1;
 	
 #	warn Dumper(@_);
 	
@@ -261,7 +261,11 @@ If the scalar being tested looks like a Perl class name, then
 C<< $scalar->DOES($role) >> is also called, and the string "0E0" is
 returned, which evaluates to 0 in a numeric context but true in a
 boolean context. This is an experimental feature; it has not yet
-been decided whether true or false is the correct response.
+been decided whether true or false is the correct response. Testing
+class names is a little dodgy, because you might get a different
+when testing instances of the class. For example, instances are
+typically blessed hashes, so C<< does($obj, 'HASH') >> is true.
+However, it is impossible to tell that from the class name.
 
 Note that the C<DOES> method is only defined in L<UNIVERSAL> in
 Perl 5.10+. You may wish to load L<UNIVERSAL::DOES> on earlier versions

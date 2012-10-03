@@ -22,8 +22,33 @@ BEGIN {
 	);
 }
 
+BEGIN {
+	package Scalar::Does::RoleChecker;
+	use overload
+		q[""]    => 'name',
+		q[&{}]   => 'code',
+		fallback => 1,
+	;
+	sub new {
+		my $class = shift;
+		my ($name, $coderef);
+		for my $p (@_)
+		{
+			if (Scalar::Does::does($p, 'CODE'))  { $coderef = $p }
+			if (Scalar::Does::does($p, 'HASH'))  { $coderef = $p->{where} }
+			if (Scalar::Does::does($p, 'Regexp')){ $coderef = sub { $_[0] =~ $p } }
+			if (not ref $p)                      { $name    = $p }
+		}
+		Carp::confess("Cannot make role without checker coderef or regexp.")
+			unless $coderef;
+		bless { name => $name, code => $coderef } => $class;
+	}
+	sub name  { $_[0]{name} }
+	sub code  { $_[0]{code} }
+	sub check { $_[0]{code}->($_[1]) }
+}
+
 use constant \%_CONSTANTS;
-use overload ();
 use Carp             0     qw( confess );
 use IO::Detect       0.001 qw( is_filehandle );
 use namespace::clean 0.19  qw();
@@ -31,7 +56,7 @@ use Scalar::Util     1.20  qw( blessed reftype looks_like_number );
 
 use Sub::Exporter -setup => {
 	exports => [
-		qw( does overloads blessed reftype looks_like_number ),
+		qw( does overloads blessed reftype looks_like_number make_role where ),
 		custom => \&_build_custom,
 		keys %_CONSTANTS,
 	],
@@ -39,6 +64,7 @@ use Sub::Exporter -setup => {
 		default        => [qw( does )],
 		constants      => [qw( -default -only_constants )],
 		only_constants => [keys %_CONSTANTS],
+		make           => [qw( make_role where )],
 	},
 	installer => sub {
 		namespace::clean->import(
@@ -133,6 +159,16 @@ sub _build_custom
 		push @_, $role;
 		goto \&does;
 	}
+}
+
+sub make_role
+{
+	return 'Scalar::Does::RoleChecker'->new(@_);
+}
+
+sub where (&)
+{
+	return +{ where => $_[0] };
 }
 
 "it does"
@@ -268,15 +304,34 @@ Note that the C<DOES> method is only defined in L<UNIVERSAL> in
 Perl 5.10+. You may wish to load L<UNIVERSAL::DOES> on earlier versions
 of Perl.
 
+=item C<< does($role) >>
+
+The single-argument form of C<does> returns a curried coderef.
+
 =item C<< overloads($scalar, $role) >>
 
 A function C<overloads> (which just checks overloading) is also available.
+
+=item C<< overloads($role) >>
+
+The single-argument form of C<overloads> returns a curried coderef.
 
 =item C<< blessed($scalar) >>, C<< reftype($scalar) >>, C<< looks_like_number($scalar) >>
 
 For convenience, this module can also re-export these functions from
 L<Scalar::Util>. C<looks_like_number> is generally more useful than
 C<< does($scalar, q[0+]) >>.
+
+=item C<< make_role $name, where { BLOCK } >>
+
+Returns an anonymous role object which can be used as a parameter to
+C<does>. The block is arbitrary code which should check whether $_[0]
+does the role.
+
+=item C<< where { BLOCK } >>
+
+Syntactic sugar for C<make_role>. Compatible with the C<where> function
+from L<Moose::Util::TypeConstraints>, so don't worry about conflicts.
 
 =back
 
@@ -335,6 +390,10 @@ Scalar::Does without interfering with that.
 You can import the constants (plus C<does>) using:
 
   use Scalar::Does -constants;
+
+The C<make_role> and C<where> functions can be exported like this:
+
+  use Scalar::Does -make;
 
 Or list specific functions/constants that you wish to import:
 
@@ -415,7 +474,29 @@ enough to work as well.
 See also:
 L<Moose::Meta::TypeConstraint>,
 L<Moose::Util::TypeConstraints>,
-L<MooseX::Types>.
+L<MooseX::Types>,
+L<Scalar::Does::MooseTypes>.
+
+=head2 Relationship to Role::Tiny and Moo roles
+
+At the time of writing, Role::Tiny roles B<< do not >> work as roles for
+Scalar::Does. There is an open ticket against Role::Tiny which, if resolved,
+should fix this.
+
+See L<https://rt.cpan.org/Ticket/Display.html?id=79747>.
+
+Moo's role system is based on Role::Tiny, and consequently has the same
+limitation.
+
+=head2 Relationship to Moo type constraints
+
+Unlike Moose and Mouse, Moo does not have a type system, but the C<< does >>
+function can be used as ersatz type constraints.
+
+  has my_list => (
+    is     => 'rw',
+    isa    => does('ARRAY'),
+  );
 
 =head2 Relationship to Object::DOES
 

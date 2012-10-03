@@ -22,3 +22,11 @@
 	changeset [
 		item "Ensure t/99smartmatch.t is skipped properly on Perl < 5.10.1."^^Bugfix;
 	].
+
+`Scalar-Does 0.004 cpan:TOBYINK`
+	issued  2012-10-03;
+	changeset [
+		item "make_role function for creating anonymous roles."^^Addition;
+		item "Scalar::Does::MooseTypes."^^Addition;
+		item "Better document interaction with Role::Tiny and Moo."^^Documentation;
+	].

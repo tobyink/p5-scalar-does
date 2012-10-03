@@ -7,7 +7,7 @@ use utf8;
 our %_CONSTANTS;
 BEGIN {
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::VERSION   = '0.003';
+	$Scalar::Does::VERSION   = '0.004';
 	
 	%_CONSTANTS = (
 		BOOLEAN    => q[bool],
@@ -24,6 +24,8 @@ BEGIN {
 
 BEGIN {
 	package Scalar::Does::RoleChecker;
+	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
+	$Scalar::Does::RoleChecker::VERSION   = '0.004';
 	use overload
 		q[""]    => 'name',
 		q[&{}]   => 'code',

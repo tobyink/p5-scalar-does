@@ -31,7 +31,7 @@
 		item "Better document interaction with Role::Tiny and Moo."^^Documentation;
 	].
 
-`Scalar-Does 0.004 cpan:TOBYINK`
+`Scalar-Does 0.005 cpan:TOBYINK`
 	issued  2012-10-05;
 	changeset [
 		item "Correct inaccurate information about Moo type constraints."^^Documentation;

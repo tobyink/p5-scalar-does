@@ -491,7 +491,7 @@ Moo's role system is based on Role::Tiny, and consequently has the same
 limitation.
 
 See also:
-L<Role::Tiny,
+L<Role::Tiny>,
 L<Moo::Role>.
 
 =head2 Relationship to Object::DOES

@@ -7,7 +7,7 @@ use utf8;
 our %_CONSTANTS;
 BEGIN {
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::VERSION   = '0.004';
+	$Scalar::Does::VERSION   = '0.005';
 	
 	%_CONSTANTS = (
 		BOOLEAN    => q[bool],
@@ -25,7 +25,7 @@ BEGIN {
 BEGIN {
 	package Scalar::Does::RoleChecker;
 	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::RoleChecker::VERSION   = '0.004';
+	$Scalar::Does::RoleChecker::VERSION   = '0.005';
 	use overload
 		q[""]    => 'name',
 		q[&{}]   => 'code',
@@ -445,7 +445,7 @@ Moose::Object overrides C<DOES>, so Moose objects and Moose roles should
   does($thomas, 'Transport');      # true
   does($thomas, Transport->meta);  # not yet supported!
 
-L<Mouse::Object> should be compatible enough to work as well, but seemingly
+L<Mouse::Object> should be compatible enough to work as well, but currently
 not L<Moo::Object>.
 
 See also:
@@ -490,15 +490,9 @@ See L<https://rt.cpan.org/Ticket/Display.html?id=79747>.
 Moo's role system is based on Role::Tiny, and consequently has the same
 limitation.
 
-=head2 Relationship to Moo type constraints
-
-Unlike Moose and Mouse, Moo does not have a type system, but the C<< does >>
-function can be used as ersatz type constraints.
-
-  has my_list => (
-    is     => 'rw',
-    isa    => does('ARRAY'),
-  );
+See also:
+L<Role::Tiny,
+L<Moo::Role>.
 
 =head2 Relationship to Object::DOES
 

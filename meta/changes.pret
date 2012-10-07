@@ -36,3 +36,9 @@
 	changeset [
 		item "Correct inaccurate information about Moo type constraints."^^Documentation;
 	].
+
+`Scalar-Does 0.006 cpan:TOBYINK`
+	issued  2012-10-07;
+	changeset [
+		item "Fix failing test case in Perl 5.8."^^Packaging;
+	].

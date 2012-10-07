@@ -63,6 +63,10 @@ Scalar::Does::MooseTypes - additional constants for Scalar::Does, inspired by th
 
 =head1 DESCRIPTION
 
+This is partially a demonstration of how to create additional roles for
+Scalar::Does, and partially included just in the hope that it would be
+useful. (The Moose type constraint system has proven quite useful.)
+
 =head2 Constants
 
 =over

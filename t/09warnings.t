@@ -5,4 +5,4 @@ $^W = 1;
 require Scalar::Does;
 Scalar::Does::does(undef, 'ARRAY');
 
-done_testing;
+done_testing(1);

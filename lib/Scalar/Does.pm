@@ -114,6 +114,7 @@ sub overloads ($;$)
 	# curry (kinda)
 	return sub { overloads(shift, $thing) } if @_==1;
 	
+	return unless defined $thing;
 	goto \&overload::Method;
 }
 

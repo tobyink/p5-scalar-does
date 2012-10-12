@@ -13,6 +13,7 @@ use Scalar::Does;
 	package Local::Does::Not;
 	sub new   { bless +{ array=>[] }, pop };
 	sub can   { return if $_[1] eq 'DOES'; shift->SUPER::can(@_) }
+	sub DOES  { +die }
 }
 
 {
@@ -27,6 +28,11 @@ use Scalar::Does;
 }
 
 my %tests = (
+	undef => [
+		undef,
+		does   => [qw( 0+ "" bool )],
+		doesnt => [qw( SCALAR @{} Regexp CODE &{} Foo::Bar UNIVERSAL )],
+	],
 	ARRAY => [
 		[],
 		does   => [qw( ARRAY @{} )],

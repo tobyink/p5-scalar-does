@@ -42,3 +42,15 @@
 	changeset [
 		item "Fix failing test case in Perl 5.8."^^Packaging;
 	].
+
+`Scalar-Does 0.007 cpan:TOBYINK`
+	label   "Skyfall";
+	issued  2012-10-23;
+	changeset [
+		item [
+			a dcs:Bugfix;
+			label "Fix warning on does(undef, $role) when $^W is true.";
+			dcs:thanks cpan:DAMI;
+			dcs:fixes RT#80121;
+		];
+	].

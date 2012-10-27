@@ -65,4 +65,8 @@
 			seealso RT#80434;
 			dcs:thanks cpan:DAMI;
 		];
+		item [
+			a dcs:Documentation, dcs:Removal;
+			label "Remove references to Object-DOES in documentation.";
+		];
 	].

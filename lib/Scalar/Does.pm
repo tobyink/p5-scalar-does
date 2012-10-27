@@ -188,12 +188,14 @@ Scalar::Does - like ref() but useful
 
 =head1 SYNOPSIS
 
+  use Scalar::Does qw( -constants );
+  
   my $object = bless {}, 'Some::Class';
   
   does($object, 'Some::Class');   # true
   does($object, '%{}');           # true
-  does($object, 'HASH');          # true
-  does($object, 'ARRAY');         # false
+  does($object, HASH);            # true
+  does($object, ARRAY);           # false
 
 =head1 DESCRIPTION
 
@@ -512,24 +514,6 @@ limitation.
 See also:
 L<Role::Tiny>,
 L<Moo::Role>.
-
-=head2 Relationship to Object::DOES
-
-L<Object::DOES> provides a convenient way of overriding C<DOES> in your
-classes.
-
-  {
-    package Train;
-    use Object::DOES -role => [qw/ Transport /];
-    sub new { my ($class, %arg) = @_; bless \%arg, $class }
-  }
-  
-  my $thomas = Train->new;
-  does($thomas, 'Train');      # true
-  does($thomas, 'Transport');  # true
-
-See also:
-L<Object::DOES>.
 
 =head1 AUTHOR
 

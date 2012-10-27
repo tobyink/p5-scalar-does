@@ -1,7 +1,7 @@
 package Scalar::Does::MooseTypes;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.007';
+our $VERSION   = '0.008';
 
 use Scalar::Does qw( blessed does looks_like_number -make );
 
@@ -22,7 +22,7 @@ BEGIN {
 		make_role('CodeRef',   sub { ref $_[0] eq 'CODE' }),
 		make_role('RegexpRef', sub { ref $_[0] eq 'Regexp' }),
 		make_role('GlobRef',   sub { ref $_[0] eq 'GLOB' }),
-		make_role('FileHandle',\&IO::Detect::is_filehandle),
+		make_role('FileHandle',sub { require IO::Detect; IO::Detect::is_filehandle($_[0]) }),
 		make_role('Object',    sub { blessed($_[0]) }),
 		make_role('ClassName', sub { !ref($_[0]) && UNIVERSAL::can($_[0], 'can') }),
 		make_role('RoleName',  sub { !ref($_[0]) && UNIVERSAL::can($_[0], 'can') }),

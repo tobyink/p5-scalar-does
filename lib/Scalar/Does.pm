@@ -7,7 +7,7 @@ use utf8;
 our %_CONSTANTS;
 BEGIN {
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::VERSION   = '0.007';
+	$Scalar::Does::VERSION   = '0.008';
 	
 	%_CONSTANTS = (
 		BOOLEAN    => q[bool],
@@ -25,7 +25,7 @@ BEGIN {
 BEGIN {
 	package Scalar::Does::RoleChecker;
 	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::RoleChecker::VERSION   = '0.007';
+	$Scalar::Does::RoleChecker::VERSION   = '0.008';
 	use overload
 		q[""]    => 'name',
 		q[&{}]   => 'code',
@@ -52,7 +52,6 @@ BEGIN {
 
 use constant \%_CONSTANTS;
 use Carp             0     qw( confess );
-use IO::Detect       0.001 qw( is_filehandle );
 use namespace::clean 0.19  qw();
 use Scalar::Util     1.20  qw( blessed reftype looks_like_number );
 
@@ -69,7 +68,7 @@ use Sub::Exporter -setup => {
 		make           => [qw( make_role where )],
 	},
 	installer => sub {
-		namespace::clean->import(
+		namespace::clean::->import(
 			-cleanee => $_[0]{into},
 			grep { !ref } @{ $_[1] },
 		);
@@ -88,14 +87,14 @@ my %ROLES = (
 	GLOB     => sub { reftype($_) eq 'GLOB'    or overloads($_, q[*{}]) },
 	LVALUE   => sub { ref($_) eq 'LVALUE' },
 	FORMAT   => sub { reftype($_) eq 'FORMAT' },
-	IO       => \&is_filehandle,
+	IO       => sub { require IO::Detect; IO::Detect::is_filehandle($_) },
 	VSTRING  => sub { reftype($_) eq 'VSTRING' or ref($_) eq 'VSTRING' },
 	Regexp   => sub { reftype($_) eq 'Regexp'  or ref($_) eq 'Regexp'  or overloads($_, q[qr]) },
 	q[bool]  => sub { !blessed($_) or !overload::Overloaded($_) or overloads($_, q[bool]) },
 	q[""]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[""]) },
 	q[0+]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[0+]) },
-	q[<>]    => sub { overloads($_, q[<>])     or is_filehandle($_) },
-	q[~~]    => sub { overloads($_, q[~~])     or not blessed($_) },
+	q[<>]    => sub { require IO::Detect; overloads($_, q[<>]) or IO::Detect::is_filehandle($_) },
+	q[~~]    => sub { overloads($_, q[~~]) or not blessed($_) },
 	q[${}]   => 'SCALAR',
 	q[@{}]   => 'ARRAY',
 	q[%{}]   => 'HASH',
@@ -107,23 +106,29 @@ my %ROLES = (
 while (my ($k, $v) = each %ROLES)
 	{ $ROLES{$k} = $ROLES{$v} unless ref $v }
 
+sub _process
+{
+	if (@_==1)
+	{
+		require PadWalker;
+		my $h = PadWalker::peek_my(2);
+		unshift @_,
+			exists $h->{'$_'} ? ${$h->{'$_'}} : $_;
+	}
+	return @_;
+}
+
 sub overloads ($;$)
 {
-	my ($thing, $role) = @_;
-	
-	# curry (kinda)
-	return sub { overloads(shift, $thing) } if @_==1;
-	
+	my ($thing, $role) = _process @_;
+		
 	return unless defined $thing;
 	goto \&overload::Method;
 }
 
 sub does ($;$)
 {
-	my ($thing, $role) = @_;
-	
-	# curry (kinda)
-	return sub { does(shift, $thing) } if @_==1;
+	my ($thing, $role) = _process @_;
 	
 	if (my $test = $ROLES{$role})
 	{
@@ -166,7 +171,7 @@ sub _build_custom
 
 sub make_role
 {
-	return 'Scalar::Does::RoleChecker'->new(@_);
+	return Scalar::Does::RoleChecker::->new(@_);
 }
 
 sub where (&)
@@ -309,7 +314,16 @@ of Perl.
 
 =item C<< does($role) >>
 
-The single-argument form of C<does> returns a curried coderef.
+Called with a single argument, tests C<< $_ >>. Yes, this works with lexical
+C<< $_ >>.
+
+  given ($object) {
+     when(does ARRAY)  { ... }
+     when(does HASH)   { ... }
+  }
+
+Note: in Scalar::Does 0.007 and below the single-argument form of C<does>
+returned a curried coderef. This was changed in Scalar::Does 0.008.
 
 =item C<< overloads($scalar, $role) >>
 
@@ -317,7 +331,11 @@ A function C<overloads> (which just checks overloading) is also available.
 
 =item C<< overloads($role) >>
 
-The single-argument form of C<overloads> returns a curried coderef.
+Called with a single argument, tests C<< $_ >>. Yes, this works with lexical
+C<< $_ >>.
+
+Note: in Scalar::Does 0.007 and below the single-argument form of C<overloads>
+returned a curried coderef. This was changed in Scalar::Does 0.008.
 
 =item C<< blessed($scalar) >>, C<< reftype($scalar) >>, C<< looks_like_number($scalar) >>
 

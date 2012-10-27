@@ -54,3 +54,15 @@
 			dcs:fixes RT#80121;
 		];
 	].
+
+`Scalar-Does 0.008 cpan:TOBYINK`
+	issued  2012-10-27;
+	changeset [
+		item [
+			a dcs:Change;
+			label "INCOMPATIBLE CHANGE: single-argument does($role) and overloads($role) now check $_.";
+			comment "I've gone through the reverse dependencies on metacpan, and don't think anything should break.";
+			seealso RT#80434;
+			dcs:thanks cpan:DAMI;
+		];
+	].

@@ -69,4 +69,8 @@
 			a dcs:Documentation, dcs:Removal;
 			label "Remove references to Object-DOES in documentation.";
 		];
+		item [
+			a dcs:Documentation;
+			label "Revise documentation about Role::Tiny/Moo::Role's lack of DOES; it is now implemented.";
+		];
 	].

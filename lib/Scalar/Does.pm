@@ -466,8 +466,7 @@ Moose::Object overrides C<DOES>, so Moose objects and Moose roles should
   does($thomas, 'Transport');      # true
   does($thomas, Transport->meta);  # not yet supported!
 
-L<Mouse::Object> should be compatible enough to work as well, but currently
-not L<Moo::Object>.
+L<Mouse::Object> should be compatible enough to work as well.
 
 See also:
 L<Moose::Role>,
@@ -502,14 +501,11 @@ L<Scalar::Does::MooseTypes>.
 
 =head2 Relationship to Role::Tiny and Moo roles
 
-At the time of writing, Role::Tiny roles B<< do not >> work as roles for
-Scalar::Does. There is an open ticket against Role::Tiny which, if resolved,
-should fix this.
+Roles using Role::Tiny 1.002000 and above provide a C<DOES> method, so
+should work with Scalar::Does just like Moose roles. Prior to that release,
+Role::Tiny did not provide C<DOES>.
 
-See L<https://rt.cpan.org/Ticket/Display.html?id=79747>.
-
-Moo's role system is based on Role::Tiny, and consequently has the same
-limitation.
+Moo's role system is based on Role::Tiny.
 
 See also:
 L<Role::Tiny>,

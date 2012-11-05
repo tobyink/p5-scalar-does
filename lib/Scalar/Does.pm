@@ -3,11 +3,12 @@ package Scalar::Does;
 use 5.008;
 use strict;
 use utf8;
+use if $] < 5.010, 'UNIVERSAL::DOES';
 
 our %_CONSTANTS;
 BEGIN {
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::VERSION   = '0.008';
+	$Scalar::Does::VERSION   = '0.009';
 	
 	%_CONSTANTS = (
 		BOOLEAN    => q[bool],
@@ -25,7 +26,7 @@ BEGIN {
 BEGIN {
 	package Scalar::Does::RoleChecker;
 	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::RoleChecker::VERSION   = '0.008';
+	$Scalar::Does::RoleChecker::VERSION   = '0.009';
 	use overload
 		q[""]    => 'name',
 		q[&{}]   => 'code',
@@ -309,10 +310,6 @@ class names is a little dodgy, because you might get a different
 when testing instances of the class. For example, instances are
 typically blessed hashes, so C<< does($obj, 'HASH') >> is true.
 However, it is impossible to tell that from the class name.
-
-Note that the C<DOES> method is only defined in L<UNIVERSAL> in
-Perl 5.10+. You may wish to load L<UNIVERSAL::DOES> on earlier versions
-of Perl.
 
 =item C<< does($role) >>
 

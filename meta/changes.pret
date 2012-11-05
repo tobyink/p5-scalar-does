@@ -74,3 +74,12 @@
 			label "Revise documentation about Role::Tiny/Moo::Role's lack of DOES; it is now implemented.";
 		];
 	].
+
+`Scalar-Does 0.009 cpan:TOBYINK`
+	issued  2012-11-05;
+	label   "Gunpowder, treason and plot";
+	changeset [
+		item "Skip test '10underscore.t' on Perl 5.008 as it doesn't support lexical $_."^^Bugfix;
+		item "Requires UNIVERSAL::DOES in Perl < 5.010."^^Packaging;
+		item "use if $] < 5.010, 'UNIVERSAL::DOES'."^^Bugfix;
+	].

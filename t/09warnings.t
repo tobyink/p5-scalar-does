@@ -3,6 +3,15 @@
 Check that Scalar::Does doesn't issue any unexpected warnings, even under
 C<< $^W >>.
 
+=head1 SEE ALSO
+
+L<https://rt.cpan.org/Ticket/Display.html?id=80121>.
+
+=head1 THANKS
+
+Laurent Dami initially reported this issue and gave a good demonstration
+of it.
+
 =head1 AUTHOR
 
 Toby Inkster E<lt>tobyink@cpan.orgE<gt>.

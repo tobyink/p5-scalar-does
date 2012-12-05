@@ -3,6 +3,10 @@
 Tests that the one-argument form of C<does> works with lexical C<< $_ >>,
 using C<< my $_ >>.
 
+=head1 SEE ALSO
+
+L<https://rt.cpan.org/Ticket/Display.html?id=80434>.
+
 =head1 AUTHOR
 
 Toby Inkster E<lt>tobyink@cpan.orgE<gt>.

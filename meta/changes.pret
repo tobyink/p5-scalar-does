@@ -92,4 +92,5 @@
 			dcs:fixes RT#81622;
 			label "Perl 5.17 has changed the behaviour of UNIVERSAL::can($pkg, 'can'), so that it is no longer useful for detecting whether a package is loaded. Changed Scalar::Does::MooseLike to avoid this idiom.";
 		];
+		item "Add documentation for test suite."^^Documentation;
 	].

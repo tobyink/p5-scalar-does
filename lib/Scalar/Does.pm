@@ -8,7 +8,7 @@ use if $] < 5.010, 'UNIVERSAL::DOES';
 our %_CONSTANTS;
 BEGIN {
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::VERSION   = '0.009';
+	$Scalar::Does::VERSION   = '0.010';
 	
 	%_CONSTANTS = (
 		BOOLEAN    => q[bool],
@@ -26,7 +26,7 @@ BEGIN {
 BEGIN {
 	package Scalar::Does::RoleChecker;
 	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::RoleChecker::VERSION   = '0.009';
+	$Scalar::Does::RoleChecker::VERSION   = '0.010';
 	use overload
 		q[""]    => 'name',
 		q[&{}]   => 'code',

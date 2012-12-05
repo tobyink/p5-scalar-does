@@ -1,9 +1,20 @@
 package Scalar::Does::MooseTypes;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.009';
+our $VERSION   = '0.010';
 
 use Scalar::Does qw( blessed does looks_like_number -make );
+
+sub is_class_loaded {
+	return !!0 if ref $_[0];
+	my $stash = do { no strict 'refs'; \%{"$_[0]\::"} };
+	return !!1 if exists $stash->{'ISA'};
+	return !!1 if exists $stash->{'VERSION'};
+	foreach my $globref (values %$stash) {
+		return !!1 if *{$globref}{CODE};
+	}
+	return !!0;
+}
 
 my @ROLES;
 my @NAMES;
@@ -24,8 +35,8 @@ BEGIN {
 		make_role('GlobRef',   sub { ref $_[0] eq 'GLOB' }),
 		make_role('FileHandle',sub { require IO::Detect; IO::Detect::is_filehandle($_[0]) }),
 		make_role('Object',    sub { blessed($_[0]) }),
-		make_role('ClassName', sub { !ref($_[0]) && UNIVERSAL::can($_[0], 'can') }),
-		make_role('RoleName',  sub { !ref($_[0]) && UNIVERSAL::can($_[0], 'can') }),
+		make_role('ClassName', \&is_class_loaded),
+		make_role('RoleName',  \&is_class_loaded),
 		make_role('ScalarRef', sub { ref $_[0] eq 'SCALAR' || ref $_[0] eq 'REF' }),
 		make_role('ArrayRef',  sub { ref $_[0] eq 'ARRAY' }),
 		make_role('HashRef',   sub { ref $_[0] eq 'HASH' }),

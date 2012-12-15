@@ -96,3 +96,9 @@
 		item "Add documentation for test suite."^^Documentation;
 	].
 
+`Scalar-Does 0.011_01 cpan:TOBYINK`
+	issued  2012-12-15;
+	changeset [
+		item "Attempt to fix some problems CPAN smoke tests are reporting in 09warnings.t."^^Bugfix;
+	].
+

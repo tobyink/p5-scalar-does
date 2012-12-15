@@ -26,6 +26,13 @@ the same terms as the Perl 5 programming language system itself.
 =cut
 
 use Test::More;
+
+BEGIN {
+	eval { require List::MoreUtils }
+	and !( List::MoreUtils::_XScompiled() )
+	and plan skip_all => 'pure Perl List::MoreUtils generates warning under -w'
+};
+
 use Test::NoWarnings;
 
 $^W = 1;

@@ -106,5 +106,5 @@
 	issued  2013-01-11;
 	comment "No functional changes since 0.011_01.";
 	changeset [
-		item "Copyright 2013."^^Documentation.
+		item "Copyright 2013."^^Documentation;
 	].

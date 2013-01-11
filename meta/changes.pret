@@ -102,3 +102,9 @@
 		item "Attempt to fix some problems CPAN smoke tests are reporting in 09warnings.t."^^Bugfix;
 	].
 
+`Scalar-Does 0.012 cpan:TOBYINK`
+	issued  2013-01-11;
+	comment "No functional changes since 0.011_01.";
+	changeset [
+		item "Copyright 2013."^^Documentation.
+	].

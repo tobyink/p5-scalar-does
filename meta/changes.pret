@@ -108,3 +108,15 @@
 	changeset [
 		item "Copyright 2013."^^Documentation;
 	].
+
+`Scalar-Does 0.100 cpan:TOBYINK`
+	issued  2013-03-07;
+	changeset [
+		dcs:versus `Scalar-Does 0.012 cpan:TOBYINK`;
+		item "Merge IO-Detect distribution into Scalar-Does."^^Change;
+		item "The IO-Detect-Changes.txt file lists changes to the IO-Detect distribution prior to merge."^^Packaging;
+	];
+	changeset [
+		dcs:versus `IO-Detect 0.005 cpan:TOBYINK`;
+		item "New test case for IO::Detect/Path::Tiny interaction."^^Update;
+	].

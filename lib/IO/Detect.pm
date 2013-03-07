@@ -8,7 +8,7 @@ use utf8;
 
 BEGIN {
 	$IO::Detect::AUTHORITY = 'cpan:TOBYINK';
-	$IO::Detect::VERSION   = '0.013';
+	$IO::Detect::VERSION   = '0.100';
 	
 	*UNIVERSAL::DOES = sub { shift->isa(@_) }
 		unless UNIVERSAL->can('DOES');
@@ -155,7 +155,7 @@ sub _build_as_filehandle
 	package IO::Detect::SmartMatcher;
 	BEGIN {
 		$IO::Detect::SmartMatcher::AUTHORITY = 'cpan:TOBYINK';
-		$IO::Detect::SmartMatcher::VERSION   = '0.013';
+		$IO::Detect::SmartMatcher::VERSION   = '0.100';
 	}
 	use Scalar::Util qw< blessed >;
 	use overload (); no warnings 'overload';  # '~~' unavailable in Perl 5.8

@@ -1,7 +1,7 @@
 package Scalar::Does::MooseTypes;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.012';
+our $VERSION   = '0.013';
 
 use Scalar::Does qw( blessed does looks_like_number -make );
 

@@ -35,7 +35,7 @@ my @uris = qw(
 	file:///c|/WINDOWS/clock.avi
 	file://localhost/c:/WINDOWS/clock.avi
 	file://localhost///remotehost/share/dir/file.txt
-	file://///remotehost/share/dir/file.txt 
+	file://///remotehost/share/dir/file.txt
 );
 
 @uris = (

@@ -99,7 +99,7 @@ my $expected_methods = [
 	return true if blessed $fh && $fh->DOES('FileHandle');
 	return true if blessed $fh && $fh->DOES('IO::All');
 	
-	return _ducktype $fh, $expected_methods; 
+	return _ducktype $fh, $expected_methods;
 } '_';
 
 sub _oneline ($)

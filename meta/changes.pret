@@ -113,7 +113,7 @@
 	issued  2013-03-07;
 	changeset [
 		dcs:versus `Scalar-Does 0.012 cpan:TOBYINK`;
-		item "Merge IO-Detect distribution into Scalar-Does."^^Change;
+		item "Merge IO-Detect distribution into Scalar-Does."^^Packaging;
 		item "The IO-Detect-Changes.txt file lists changes to the IO-Detect distribution prior to merge."^^Packaging;
 	];
 	changeset [

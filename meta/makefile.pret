@@ -5,8 +5,8 @@
 	version_from      m`Scalar::Does`;
 	readme_from       m`Scalar::Does`;
 	requires          p`namespace::clean 0.19`;
-	requires          p`IO::Detect 0.001`;
-	requires          p`Scalar::Util 1.23`;
+	requires          p`URI::file`;
+	requires          p`Scalar::Util 1.24`;
 	requires          p`Sub::Exporter`;
 	requires          p`PadWalker`;
 	test_requires     p`Test::NoWarnings 0`;

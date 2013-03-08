@@ -40,6 +40,11 @@ push @filenames, Local::Stringifier->new(__FILE__);
 ok !is_filename([]), 'is_filename ARRAY';
 ok !is_filename(undef), 'is_filename undef';
 ok !is_filename(''), 'is_filename empty string';
+ok !is_filename(<<'FILENAME'), 'is_filename multiline';
+multi
+line
+string
+FILENAME
 
 if ($] >= 5.010)
 {

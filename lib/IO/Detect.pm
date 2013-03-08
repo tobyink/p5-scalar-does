@@ -316,6 +316,19 @@ be plain old confusing.
 Although C<is_filehandle> and its friends support Perl 5.8 and above,
 smart match is only available in Perl 5.10 onwards.
 
+=head2 Use with Scalar::Does
+
+The smart match constants can also be used with L<Scalar::Does>:
+
+	if (does $file, FileHandle)
+	{
+		...;
+	}
+	elsif (does $file, FileName)
+	{
+		...;
+	}
+
 =head2 Precedence
 
 Because there is some overlap/ambiguity between what is a filehandle

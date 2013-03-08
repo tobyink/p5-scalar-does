@@ -24,10 +24,10 @@ use Sub::Exporter -setup => {
 		smartmatch => [qw( FileHandle FileName FileUri )],
 	},
 	installer => sub {
-#		namespace::clean::->import(
-#			-cleanee => $_[0]{into},
-#			grep { !ref } @{ $_[1] },
-#		);
+		namespace::clean::->import(
+			-cleanee => $_[0]{into},
+			grep { !ref } @{ $_[1] },
+		);
 		goto \&Sub::Exporter::default_installer;
 	},
 };
@@ -342,7 +342,13 @@ falling back to C<is_filename>.
 		default            { die "$file is not a file!" }
 	}
 
-=head2 Duck Typing
+=head2 Export
+
+Like Scalar::Does, IO::Detect plays some tricks with L<namespace::clean> to
+ensure that any functions it exports to your namespace are cleaned up when
+you're finished with them.
+
+=head3 Duck Typing
 
 In some cases you might be happy to accept something less than a
 complete file handle. In this case you can import a customised
@@ -381,8 +387,8 @@ executable code.
 
 Various other modules that may be of interest, in no particular
 order...
-L<Scalar::Util>,
 L<Scalar::Does>,
+L<Scalar::Util>,
 L<FileHandle>,
 L<IO::Handle>,
 L<IO::Handle::Util>,

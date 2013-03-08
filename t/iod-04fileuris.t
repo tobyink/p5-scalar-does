@@ -47,13 +47,13 @@ my @uris = qw(
 if ($] >= 5.010)
 {
 	eval q[
+		use IO::Detect -smartmatch, -default;
 		ok(is_fileuri, sprintf("is_fileuri %s %s", ref $_, $_)) foreach @uris;
 		ok($_ ~~ FileUri, sprintf("is_fileuri %s %s", ref $_, $_)) foreach @uris;
 	];
 }
 
 ok not is_fileuri 'http://localhost/';
-
 ok not is_fileuri "http://localhost/\nfile://";
 
 done_testing();

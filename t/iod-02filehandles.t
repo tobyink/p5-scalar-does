@@ -85,15 +85,10 @@ if ($] >= 5.010)
 	foreach (@handles)
 	{
 		my ($truth, $label, $fh) = @$_;
-		
-		if ($truth)
-		{
-			eval q[ ok($fh ~~ FileHandle, "smart match positive for $label") ];
-		}
-		else
-		{
-			eval q[ ok(not($fh ~~ FileHandle), "smart match negitive for $label") ];
-		}
+		my $eval = $truth
+			? q[ ok($fh ~~ FileHandle, "smart match positive for $label") ]
+			: q[ ok(not($fh ~~ FileHandle), "smart match negitive for $label") ];
+		eval "use IO::Detect -smartmatch; $eval";
 	}
 }
 

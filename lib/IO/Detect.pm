@@ -12,6 +12,7 @@ BEGIN {
 	$IO::Detect::VERSION   = '0.100';
 }
 
+use namespace::clean 0.19 qw<>;
 use Sub::Exporter -setup => {
 	exports => [
 		qw( is_filehandle is_filename is_fileuri ),
@@ -22,6 +23,13 @@ use Sub::Exporter -setup => {
 	groups => {
 		default    => [qw( is_filehandle is_filename is_fileuri )],
 		smartmatch => [qw( FileHandle FileName FileUri )],
+	},
+	installer => sub {
+		namespace::clean::->import(
+			-cleanee => $_[0]{into},
+			grep { !ref } @{ $_[1] },
+		);
+		goto \&Sub::Exporter::default_installer;
 	},
 };
 

@@ -5,13 +5,11 @@ use constant { false => !1, true => !0 };
 use strict;
 use warnings;
 use utf8;
+use if $] < 5.010, 'UNIVERSAL::DOES';
 
 BEGIN {
 	$IO::Detect::AUTHORITY = 'cpan:TOBYINK';
 	$IO::Detect::VERSION   = '0.100';
-	
-	*UNIVERSAL::DOES = sub { shift->isa(@_) }
-		unless UNIVERSAL->can('DOES');
 }
 
 # This is kinda dumb, but Perl 5.8 doesn't grok the _ prototype.

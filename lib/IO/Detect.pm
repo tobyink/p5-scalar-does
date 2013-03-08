@@ -12,14 +12,6 @@ BEGIN {
 	$IO::Detect::VERSION   = '0.100';
 }
 
-# This is kinda dumb, but Perl 5.8 doesn't grok the _ prototype.
-BEGIN {
-	if ($] < 5.010)
-		{ eval "sub $_ (\$);" for qw(is_filehandle is_fileuri is_filename) }
-	else
-		{ eval "sub $_ (_);" for qw(is_filehandle is_fileuri is_filename) }
-}
-
 use Sub::Exporter -setup => {
 	exports => [
 		qw( is_filehandle is_filename is_fileuri ),
@@ -38,12 +30,9 @@ use Scalar::Util qw< blessed openhandle reftype >;
 use Carp qw<croak>;
 use URI::file;
 
-sub _subpt (&;$)
-{
-	my ($code, $proto) = @_;
-	$proto =~ s/_/\$/g if $] < 5.010;
-	no warnings;
-	return &Scalar::Util::set_prototype($code, $proto);
+sub _lu {
+	require lexical::underscore;
+	goto \&lexical::underscore;
 }
 
 sub _ducktype
@@ -63,15 +52,20 @@ sub _build_ducktype
 {
 	my ($class, $name, $arg) = @_;
 	my $methods = $arg->{methods};
-	return _subpt { _ducktype((@_?shift:$_), $methods) } '_';
+	return sub (;$) {
+		@_ = ${+_lu} unless @_;
+		push @_, $methods;
+		goto \&_ducktype;
+	};
 }
 
 my $expected_methods = [
 	qw(close eof fcntl fileno getc getline getlines ioctl read print stat)
 ];
-*is_filehandle = _subpt
+
+sub is_filehandle (;$)
 {
-	my $fh = @_ ? shift : $_;
+	my $fh = @_ ? shift : ${+_lu};
 	
 	return true if openhandle $fh;
 	
@@ -98,16 +92,16 @@ my $expected_methods = [
 	return true if blessed $fh && $fh->DOES('IO::All');
 	
 	return _ducktype $fh, $expected_methods;
-} '_';
+}
 
 sub _oneline ($)
 {
 	!! ( $_[0] !~ /\r?\n|\r/s )
 }
 
-*is_filename = _subpt
+sub is_filename (;$)
 {
-	my $f = @_ ? shift : $_;
+	my $f = @_ ? shift : ${+_lu};
 	return true if blessed $f && $f->DOES('IO::All');
 	return true if blessed $f && $f->DOES('Path::Class::Entity');
 	return ( length "$f" and _oneline "$f" )
@@ -115,26 +109,25 @@ sub _oneline ($)
 	return ( length $f and _oneline $f )
 		if defined $f && !ref $f;
 	return;
-} '_';
+}
 
-*is_fileuri = _subpt
+sub is_fileuri (;$)
 {
-	my $f = @_ ? shift : $_;
+	my $f = @_ ? shift : ${+_lu};
 	return $f if blessed $f && $f->DOES('URI::file');
 	return URI::file->new($f->uri) if blessed $f && $f->DOES('RDF::Trine::Node::Resource');
 	return URI::file->new($f) if $f =~ m{^file://\S+}i;
 	return;
-} '_';
-
+}
 
 sub _build_as_filehandle
 {
 	my ($class, $name, $arg) = @_;
 	my $default_mode = $arg->{mode} || '<';
 	
-	return _subpt
+	return sub (;$$)
 	{
-		my $f = @_ ? shift : $_;
+		my $f = @_ ? shift : ${+_lu};
 		return $f if is_filehandle($f);
 		
 		if (my $uri = is_fileuri($f))
@@ -144,7 +137,7 @@ sub _build_as_filehandle
 		open my $fh, $mode, $f
 			or croak "Cannot open '$f' with mode '$mode': $!, died";
 		return $fh;
-	} '_;$'
+	};
 }
 
 *as_filehandle = __PACKAGE__->_build_as_filehandle('as_filehandle', +{});

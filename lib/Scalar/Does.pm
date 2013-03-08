@@ -77,6 +77,11 @@ use Sub::Exporter -setup => {
 	},
 };
 
+sub _lu {
+	require lexical::underscore;
+	goto \&lexical::underscore;
+}
+
 no warnings;
 
 my %ROLES = (
@@ -107,21 +112,9 @@ my %ROLES = (
 while (my ($k, $v) = each %ROLES)
 	{ $ROLES{$k} = $ROLES{$v} unless ref $v }
 
-sub _process
-{
-	if (@_==1)
-	{
-		require PadWalker;
-		my $h = PadWalker::peek_my(2);
-		unshift @_,
-			exists $h->{'$_'} ? ${$h->{'$_'}} : $_;
-	}
-	return @_;
-}
-
 sub overloads ($;$)
 {
-	my ($thing, $role) = _process @_;
+	my ($thing, $role) = ((@_==1)?${+_lu}:(), @_);
 		
 	return unless defined $thing;
 	goto \&overload::Method;
@@ -129,7 +122,7 @@ sub overloads ($;$)
 
 sub does ($;$)
 {
-	my ($thing, $role) = _process @_;
+	my ($thing, $role) = ((@_==1)?${+_lu}:(), @_);
 	
 	if (my $test = $ROLES{$role})
 	{

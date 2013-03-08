@@ -21,13 +21,10 @@ the same terms as the Perl 5 programming language system itself.
 
 use strict;
 use Test::More;
-BEGIN {
-	eval("use Path::Class 'file'; 1") && ($] >= 5.010)
-	or plan skip_all => "Need Path::Class for this test.";
-};
+use Test::Requires "v5.10", "Path::Class";
 
+use Path::Class 'file';
 use IO::Detect;
-plan tests => 3;
 
 $_ = file('Makefile.PL');
 
@@ -35,3 +32,4 @@ ok not(is_filehandle), "is_filehandle";
 ok is_filename, "is_filename";
 ok not(is_fileuri), "is_fileuri";
 
+done_testing;

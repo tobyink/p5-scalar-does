@@ -21,10 +21,7 @@ the same terms as the Perl 5 programming language system itself.
 =cut
 
 use Test::More;
-
-BEGIN {
-	plan skip_all => "no support for lexical \$_" unless eval q{ my $_ = 1 };
-};
+use Test::Requires "v5.10.0";
 
 use Scalar::Does -constants, 'overloads';
 

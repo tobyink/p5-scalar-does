@@ -126,4 +126,5 @@
 	changeset [
 		item "use lexical::underscore instead of directly mucking around with PadWalker."^^Change;
 		item "Show how IO::Detect's constants can be used with Scalar::Does's does() function."^^Documentation;
+		item "IO::Detect now performs the same namespace::clean trickery as Scalar::Does to fake lexical subs."^^Change;
 	].

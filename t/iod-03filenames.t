@@ -42,7 +42,7 @@ ok !is_filename(undef), 'is_filename undef';
 ok !is_filename(''), 'is_filename empty string';
 
 if ($] >= 5.010)
-{	
+{
 	eval q[
 		use IO::Detect -smartmatch, -default;
 		

@@ -16,10 +16,13 @@ the same terms as the Perl 5 programming language system itself.
 
 =cut
 
+use strict;
+use warnings;
 use Test::More tests => 11;
+
 use Scalar::Does does => -make;
 
-my $positive = make_role 'Positive Integer', where { $_[0] > 0 };
+my $positive = make_role 'Positive Integer', where { no warnings 'numeric'; $_[0] > 0 };
 
 can_ok $positive => 'check';
 is("$positive", "Positive Integer");

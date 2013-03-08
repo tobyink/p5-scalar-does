@@ -17,7 +17,9 @@ the same terms as the Perl 5 programming language system itself.
 =cut
 
 use strict;
+use warnings;
 use Test::More;
+
 use Scalar::Does -constants;
 
 my $var = "Hello world";

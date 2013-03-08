@@ -15,7 +15,10 @@ the same terms as the Perl 5 programming language system itself.
 
 =cut
 
+use strict;
+use warnings;
 use Test::More tests => 5;
+
 use Scalar::Does
 	custom => { -role => 'ARRAY', -as => 'does_array' },
 	custom => { -role => 'HASH',  -as => 'does_hash'  };

@@ -18,6 +18,7 @@ the same terms as the Perl 5 programming language system itself.
 use strict;
 use warnings;
 use Test::More;
+
 use IO::Detect as_filehandle => { mode => "<:encoding(UTF-8)" };
 
 my $fh = as_filehandle(__FILE__);

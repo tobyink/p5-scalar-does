@@ -17,7 +17,10 @@ the same terms as the Perl 5 programming language system itself.
 
 =cut
 
+use strict;
+use warnings;
 use Test::More tests => 2;
+
 use IO::Detect ducktype => { -as => 'can_dump', methods => ['Dump'] };
 
 use Data::Dumper;

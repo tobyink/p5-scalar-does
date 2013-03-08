@@ -4,7 +4,6 @@ use 5.008;
 use constant { false => !1, true => !0 };
 use strict;
 use warnings;
-use utf8;
 use if $] < 5.010, 'UNIVERSAL::DOES';
 
 BEGIN {

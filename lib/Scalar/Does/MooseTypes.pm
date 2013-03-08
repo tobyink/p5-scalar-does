@@ -1,5 +1,7 @@
 package Scalar::Does::MooseTypes;
 
+use strict;
+
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.100';
 

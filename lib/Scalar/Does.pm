@@ -2,7 +2,6 @@ package Scalar::Does;
 
 use 5.008;
 use strict;
-use utf8;
 use if $] < 5.010, 'UNIVERSAL::DOES';
 
 our %_CONSTANTS;

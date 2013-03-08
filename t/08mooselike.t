@@ -46,6 +46,14 @@ ok does('', Bool);
 ok does(0, Bool);
 ok does(1, Bool);
 ok !does(7, Bool);
+ok does(\(\"Hello"), ScalarRef);
+
+ok !does([], Str);
+ok !does([], Num);
+ok !does([], Int);
+ok  does("4x4", Str);
+ok !does("4x4", Num);
+ok !does("4.2", Int);
 
 ok !does(undef, Str);
 ok !does(undef, Num);
@@ -53,5 +61,26 @@ ok !does(undef, Int);
 ok !does(undef, Defined);
 ok !does(undef, Value);
 
-done_testing;
+{
+	package Local::Class1;
+	use strict;
+}
 
+{
+	no warnings 'once';
+	$Local::Class2::VERSION = 0.001;
+	@Local::Class3::ISA     = qw(UNIVERSAL);
+	@Local::Dummy1::FOO     = qw(UNIVERSAL);
+}
+
+{
+	package Local::Class4;
+	sub XYZ () { 1 }
+}
+
+ok !does(undef, ClassName);
+ok !does([], ClassName);
+ok  does("Local::Class$_", ClassName) for 2..4;
+ok !does("Local::Dummy1", ClassName);
+
+done_testing;

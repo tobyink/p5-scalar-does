@@ -113,15 +113,15 @@ while (my ($k, $v) = each %ROLES)
 
 sub overloads ($;$)
 {
-	my ($thing, $role) = ((@_==1)?${+_lu}:(), @_);
-		
-	return unless defined $thing;
+	unshift @_, ${+_lu} if @_ == 1;
+	return unless blessed $_[0];
 	goto \&overload::Method;
 }
 
 sub does ($;$)
 {
-	my ($thing, $role) = ((@_==1)?${+_lu}:(), @_);
+	unshift @_, ${+_lu} if @_ == 1;
+	my ($thing, $role) = @_;
 	
 	if (my $test = $ROLES{$role})
 	{
@@ -136,7 +136,7 @@ sub does ($;$)
 	
 	if (blessed $thing && $thing->can('DOES'))
 	{
-		return 1 if $thing->DOES($role);
+		return !! 1 if $thing->DOES($role);
 	}
 	elsif (UNIVERSAL::can($thing, 'can') && $thing->can('DOES'))
 	{
@@ -295,13 +295,8 @@ the method call returned true.
 
 If the scalar being tested looks like a Perl class name, then 
 C<< $scalar->DOES($role) >> is also called, and the string "0E0" is
-returned, which evaluates to 0 in a numeric context but true in a
-boolean context. This is an experimental feature; it has not yet
-been decided whether true or false is the correct response. Testing
-class names is a little dodgy, because you might get a different
-when testing instances of the class. For example, instances are
-typically blessed hashes, so C<< does($obj, 'HASH') >> is true.
-However, it is impossible to tell that from the class name.
+returned for success, which evaluates to 0 in a numeric context but
+true in a boolean context.
 
 =item C<< does($role) >>
 

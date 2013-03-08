@@ -82,8 +82,8 @@ my %tests = (
 	],
 	Overloaded_Class => [
 		'Local::Does::Array',
-		does   => [qw( bool "" ARRAY @{} Local::Does::Array UNIVERSAL Monkey )],
-		doesnt => [qw( CODE Gorilla HASH %{} )],
+		does   => [qw( bool "" Local::Does::Array UNIVERSAL Monkey )],
+		doesnt => [qw( CODE Gorilla HASH %{} ARRAY @{} )],
 	],
 	STDOUT => [
 		\*STDOUT,

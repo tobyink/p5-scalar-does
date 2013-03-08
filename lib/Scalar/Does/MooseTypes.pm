@@ -9,6 +9,7 @@ use Scalar::Does qw( blessed does looks_like_number -make );
 
 sub _is_class_loaded {
 	return !!0 if ref $_[0];
+	return !!0 if !defined $_[0];
 	my $stash = do { no strict 'refs'; \%{"$_[0]\::"} };
 	return !!1 if exists $stash->{'ISA'};
 	return !!1 if exists $stash->{'VERSION'};
@@ -27,11 +28,11 @@ BEGIN {
 		make_role('Undef',     sub { !defined $_[0] }),
 		make_role('Defined',   sub { defined $_[0] }),
 		make_role('Bool',      sub { !defined $_[0] || $_[0] eq q() || $_[0] eq '0' || $_[0] eq '1' }),
-		make_role('Value',     sub { defined $_[0] && !ref $_[0] }),
+		make_role('Value',     sub { return unless defined $_[0]; !ref $_[0] }),
 		make_role('Ref',       sub { ref $_[0] }),
-		make_role('Str',       sub { defined $_[0] && (ref(\($_[0])) eq 'SCALAR' || ref(\(my $val = $_[0])) eq 'SCALAR') }),
-		make_role('Num',       sub { defined $_[0] && !ref($_[0]) && looks_like_number($_[0]) }),
-		make_role('Int',       sub { defined $_[0] && !ref($_[0]) && $_[0] =~ /\A-?[0-9]+\z/ }),
+		make_role('Str',       sub { return unless defined $_[0]; (ref(\($_[0])) eq 'SCALAR' || ref(\(my $val = $_[0])) eq 'SCALAR') }),
+		make_role('Num',       sub { return unless defined $_[0]; !ref($_[0]) && looks_like_number($_[0]) }),
+		make_role('Int',       sub { return unless defined $_[0]; !ref($_[0]) && $_[0] =~ /\A-?[0-9]+\z/ }),
 		make_role('CodeRef',   sub { ref $_[0] eq 'CODE' }),
 		make_role('RegexpRef', sub { ref $_[0] eq 'Regexp' }),
 		make_role('GlobRef',   sub { ref $_[0] eq 'GLOB' }),

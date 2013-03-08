@@ -1,7 +1,7 @@
 =head1 PURPOSE
 
-Tests that the one-argument form of C<does> works with lexical C<< $_ >>,
-using C<< my $_ >>.
+Tests that the one-argument forms of C<does> and C<overloads> work with lexical
+C<< $_ >>, using C<< my $_ >>.
 
 =head1 SEE ALSO
 
@@ -26,7 +26,7 @@ BEGIN {
 	plan skip_all => "no support for lexical \$_" unless eval q{ my $_ = 1 };
 };
 
-use Scalar::Does -constants;
+use Scalar::Does -constants, 'overloads';
 
 $_ = [];
 ok does ARRAY;
@@ -36,6 +36,19 @@ ok not does HASH;
 	my $_ = {};
 	ok does HASH;
 	ok not does ARRAY;
+}
+
+{
+	my $_ = do {
+		package Local::Overloader;
+		use overload '%{}' => sub { +{} };
+		bless [];
+	};
+
+	ok does ARRAY;
+	ok does HASH;
+	ok not overloads '@{}';
+	ok overloads '%{}';
 }
 
 done_testing;

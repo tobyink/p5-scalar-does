@@ -24,10 +24,10 @@ use Sub::Exporter -setup => {
 		smartmatch => [qw( FileHandle FileName FileUri )],
 	},
 	installer => sub {
-		namespace::clean::->import(
-			-cleanee => $_[0]{into},
-			grep { !ref } @{ $_[1] },
-		);
+#		namespace::clean::->import(
+#			-cleanee => $_[0]{into},
+#			grep { !ref } @{ $_[1] },
+#		);
 		goto \&Sub::Exporter::default_installer;
 	},
 };

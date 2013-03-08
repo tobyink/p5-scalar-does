@@ -120,3 +120,10 @@
 		dcs:versus `IO-Detect 0.005 cpan:TOBYINK`;
 		item "New test case for IO::Detect/Path::Tiny interaction."^^Update;
 	].
+
+`Scalar-Does 0.101 cpan:TOBYINK`
+	issued  2013-03-08;
+	changeset [
+		item "use lexical::underscore instead of directly mucking around with PadWalker."^^Change;
+		item "Show how IO::Detect's constants can be used with Scalar::Does's does() function."^^Documentation;
+	].

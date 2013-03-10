@@ -130,3 +130,9 @@
 		item "does($class, $overloaded_operation) no longer returns true. does($instance, $overloaded_operation) still works of course!"^^Change;
 		item "Improve test suite cleanliness; use Test::Requires, etc."^^Change;
 	].
+
+`Scalar-Does 0.102 cpan:TOBYINK`
+	issued  2013-03-10;
+	changeset [
+		item "Scalar::Util version in lib/Scalar/Does.pm and meta/makefile.pret should match."^^Bugfix;
+	].

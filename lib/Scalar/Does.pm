@@ -53,7 +53,7 @@ BEGIN {
 use constant \%_CONSTANTS;
 use Carp             0     qw( confess );
 use namespace::clean 0.19  qw();
-use Scalar::Util     1.20  qw( blessed reftype looks_like_number );
+use Scalar::Util     1.24  qw( blessed reftype looks_like_number );
 
 use Sub::Exporter -setup => {
 	exports => [

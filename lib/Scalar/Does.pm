@@ -2,6 +2,7 @@ package Scalar::Does;
 
 use 5.008;
 use strict;
+use warnings;
 use if $] < 5.010, 'UNIVERSAL::DOES';
 
 our %_CONSTANTS;
@@ -81,35 +82,36 @@ sub _lu {
 	goto \&lexical::underscore;
 }
 
-no warnings;
-
-my %ROLES = (
-	SCALAR   => sub { reftype($_) eq 'SCALAR'  or overloads($_, q[${}]) },
-	ARRAY    => sub { reftype($_) eq 'ARRAY'   or overloads($_, q[@{}]) },
-	HASH     => sub { reftype($_) eq 'HASH'    or overloads($_, q[%{}]) },
-	CODE     => sub { reftype($_) eq 'CODE'    or overloads($_, q[&{}]) },
-	REF      => sub { reftype($_) eq 'REF' },
-	GLOB     => sub { reftype($_) eq 'GLOB'    or overloads($_, q[*{}]) },
-	LVALUE   => sub { ref($_) eq 'LVALUE' },
-	FORMAT   => sub { reftype($_) eq 'FORMAT' },
-	IO       => sub { require IO::Detect; IO::Detect::is_filehandle($_) },
-	VSTRING  => sub { reftype($_) eq 'VSTRING' or ref($_) eq 'VSTRING' },
-	Regexp   => sub { reftype($_) eq 'Regexp'  or ref($_) eq 'Regexp'  or overloads($_, q[qr]) },
-	q[bool]  => sub { !blessed($_) or !overload::Overloaded($_) or overloads($_, q[bool]) },
-	q[""]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[""]) },
-	q[0+]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[0+]) },
-	q[<>]    => sub { require IO::Detect; overloads($_, q[<>]) or IO::Detect::is_filehandle($_) },
-	q[~~]    => sub { overloads($_, q[~~]) or not blessed($_) },
-	q[${}]   => 'SCALAR',
-	q[@{}]   => 'ARRAY',
-	q[%{}]   => 'HASH',
-	q[&{}]   => 'CODE',
-	q[*{}]   => 'GLOB',
-	q[qr]    => 'Regexp',
-);
-
-while (my ($k, $v) = each %ROLES)
-	{ $ROLES{$k} = $ROLES{$v} unless ref $v }
+my %ROLES;
+{
+	no warnings;
+	%ROLES = (
+		SCALAR   => sub { reftype($_) eq 'SCALAR'  or overloads($_, q[${}]) },
+		ARRAY    => sub { reftype($_) eq 'ARRAY'   or overloads($_, q[@{}]) },
+		HASH     => sub { reftype($_) eq 'HASH'    or overloads($_, q[%{}]) },
+		CODE     => sub { reftype($_) eq 'CODE'    or overloads($_, q[&{}]) },
+		REF      => sub { reftype($_) eq 'REF' },
+		GLOB     => sub { reftype($_) eq 'GLOB'    or overloads($_, q[*{}]) },
+		LVALUE   => sub { ref($_) eq 'LVALUE' },
+		FORMAT   => sub { reftype($_) eq 'FORMAT' },
+		IO       => sub { require IO::Detect; IO::Detect::is_filehandle($_) },
+		VSTRING  => sub { reftype($_) eq 'VSTRING' or ref($_) eq 'VSTRING' },
+		Regexp   => sub { reftype($_) eq 'Regexp'  or ref($_) eq 'Regexp'  or overloads($_, q[qr]) },
+		q[bool]  => sub { !blessed($_) or !overload::Overloaded($_) or overloads($_, q[bool]) },
+		q[""]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[""]) },
+		q[0+]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[0+]) },
+		q[<>]    => sub { require IO::Detect; overloads($_, q[<>]) or IO::Detect::is_filehandle($_) },
+		q[~~]    => sub { overloads($_, q[~~]) or not blessed($_) },
+		q[${}]   => 'SCALAR',
+		q[@{}]   => 'ARRAY',
+		q[%{}]   => 'HASH',
+		q[&{}]   => 'CODE',
+		q[*{}]   => 'GLOB',
+		q[qr]    => 'Regexp',
+	);
+	while (my ($k, $v) = each %ROLES)
+		{ $ROLES{$k} = $ROLES{$v} unless ref $v }
+}
 
 sub overloads ($;$)
 {
@@ -123,6 +125,7 @@ sub does ($;$)
 	unshift @_, ${+_lu} if @_ == 1;
 	my ($thing, $role) = @_;
 	
+	no warnings;
 	if (my $test = $ROLES{$role})
 	{
 		local $_ = $thing;

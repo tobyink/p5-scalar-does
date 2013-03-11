@@ -21,3 +21,7 @@ use Test::More tests => 1;
 
 BEGIN { use_ok('Scalar::Does') };
 
+my $policy_is_to_do_these_in_xt = q{
+use Test::Pod;
+use Test::Pod::Coverage;
+};

@@ -1,6 +1,7 @@
 package Scalar::Does::MooseTypes;
 
 use strict;
+use warnings;
 
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.102';
@@ -22,6 +23,7 @@ sub _is_class_loaded {
 my @ROLES;
 my @NAMES;
 BEGIN {
+	no warnings;
 	@ROLES = (
 		make_role('Any',       sub { 1 }),
 		make_role('Item',      sub { 1 }),

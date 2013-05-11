@@ -477,7 +477,7 @@ however.
   does( "123", Int );      # true
   does( "123", "Int" );    # false
 
-L<Mouse::Meta::TypeConstraints> and L<MouseX::Types> should be compatible
+L<Mouse::Meta::TypeConstraint>s and L<MouseX::Types> should be compatible
 enough to work as well.
 
 See also:

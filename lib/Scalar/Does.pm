@@ -486,6 +486,20 @@ L<Moose::Util::TypeConstraints>,
 L<MooseX::Types>,
 L<Scalar::Does::MooseTypes>.
 
+=head2 Relationship to Type::Tiny type constraints
+
+Types built with L<Type::Tiny> and L<Type::Library> can be used exactly as
+Moose type constraint objects above.
+
+  use Types::Standard qw(Int);
+  use Scalar::Does qw(does);
+  
+  does(123, Int);   # true
+
+See also:
+L<Type::Tiny>,
+L<Types::Standard>.
+
 =head2 Relationship to Role::Tiny and Moo roles
 
 Roles using Role::Tiny 1.002000 and above provide a C<DOES> method, so

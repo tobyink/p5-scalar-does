@@ -27,11 +27,7 @@ BEGIN {
 	package Scalar::Does::RoleChecker;
 	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
 	$Scalar::Does::RoleChecker::VERSION   = '0.102';
-	use overload
-		q[""]    => 'name',
-		q[&{}]   => 'code',
-		fallback => 1,
-	;
+	use base "Type::Tiny";
 	sub new {
 		my $class = shift;
 		my ($name, $coderef);
@@ -42,13 +38,10 @@ BEGIN {
 			if (Scalar::Does::does($p, 'Regexp')){ $coderef = sub { $_[0] =~ $p } }
 			if (not ref $p)                      { $name    = $p }
 		}
-		Carp::confess("Cannot make role without checker coderef or regexp.")
-			unless $coderef;
-		bless { name => $name, code => $coderef } => $class;
+		Carp::confess("Cannot make role without checker coderef or regexp.") unless $coderef;
+		$class->SUPER::new(display_name => $name, constraint => $coderef);
 	}
-	sub name  { $_[0]{name} }
-	sub code  { $_[0]{code} }
-	sub check { $_[0]{code}->($_[1]) }
+	sub code { shift->constraint };
 }
 
 use constant \%_CONSTANTS;

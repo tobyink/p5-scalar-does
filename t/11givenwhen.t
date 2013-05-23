@@ -24,6 +24,10 @@ use warnings;
 use Test::More;
 use Test::Requires "v5.10.1";
 
+BEGIN {
+	plan skip_all => "skipping given/when test in Perl >= 5.17" if $] >= 5.017;
+};
+
 use feature qw(switch);
 use Scalar::Does -constants;
 

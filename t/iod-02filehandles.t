@@ -82,7 +82,7 @@ foreach (@handles)
 	}
 }
 
-if ($] >= 5.010)
+if ($] >= 5.010 and $] < 5.017)
 {
 	foreach (@handles)
 	{

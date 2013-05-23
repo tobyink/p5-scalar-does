@@ -25,6 +25,10 @@ use warnings;
 use Test::More;
 use Test::Requires "v5.10.0";
 
+BEGIN {
+	plan skip_all => "skipping lexical \$_ test in Perl >= 5.17" if $] >= 5.017;
+};
+
 use Scalar::Does -constants, 'overloads';
 
 $_ = [];

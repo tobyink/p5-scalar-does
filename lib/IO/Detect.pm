@@ -191,7 +191,11 @@ true;
 
 __END__
 
+=pod
+
 =encoding utf8
+
+=for stopwords frickin' filehandliness
 
 =head1 NAME
 
@@ -308,7 +312,7 @@ They can be used like this:
 
 Note that there does exist a L<FileHandle> package in Perl core. This
 module attempts to do the right thing so that C<< FileHandle->new >>
-still works, but there are conveivably places this could go wrong, or
+still works, but there are conceivably places this could go wrong, or
 be plain old confusing.
 
 Although C<is_filehandle> and its friends support Perl 5.8 and above,

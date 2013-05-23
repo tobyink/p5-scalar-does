@@ -176,6 +176,12 @@ sub where (&)
 "it does"
 __END__
 
+=pod
+
+=encoding utf8
+
+=for stopwords vstring qr numifies
+
 =head1 NAME
 
 Scalar::Does - like ref() but useful

@@ -5,25 +5,14 @@ use strict;
 use warnings;
 use if $] < 5.010, 'UNIVERSAL::DOES';
 
-our %_CONSTANTS;
-BEGIN {
+METADATA:
+{
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
 	$Scalar::Does::VERSION   = '0.102';
-	
-	%_CONSTANTS = (
-		BOOLEAN    => q[bool],
-		STRING     => q[""],
-		NUMBER     => q[0+],
-		REGEXP     => q[qr],
-		SMARTMATCH => q[~~],
-		map {; $_ => $_ } qw(
-			SCALAR ARRAY HASH CODE REF GLOB
-			LVALUE FORMAT IO VSTRING
-		)
-	);
 }
 
-BEGIN {
+UTILITY_CLASS:
+{
 	package Scalar::Does::RoleChecker;
 	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
 	$Scalar::Does::RoleChecker::VERSION   = '0.102';
@@ -44,51 +33,93 @@ BEGIN {
 	sub code { shift->constraint };
 }
 
-sub _lu {
-	require lexical::underscore;
-	goto \&lexical::underscore;
+PRIVATE_STUFF:
+{
+	sub _lu {
+		require lexical::underscore;
+		goto \&lexical::underscore;
+	}
+	
+	use constant MISSING_ROLE_MESSAGE => (
+		"Please supply a '-role' argument when exporting custom functions, died"
+	);
+	
+	use Carp 0 qw( confess );
+	use Types::Standard 0.004 qw( -types );
 }
-
-use constant MISSING_ROLE_MESSAGE => (
-	"Please supply a '-role' argument when exporting custom functions, died"
-);
-
-use Carp             0     qw( confess );
-use Types::Standard  0.004 qw( -types );
 
 use namespace::clean 0.19;
 
-use constant \%_CONSTANTS;
-use Scalar::Util     1.24  qw( blessed reftype looks_like_number );
-
-use Sub::Exporter -setup => {
-	exports => [
-		qw( does overloads blessed reftype looks_like_number make_role where ),
-		custom => \&_build_custom,
-		keys %_CONSTANTS,
-	],
-	groups  => {
-		default        => [qw( does )],
-		constants      => [qw( -default -only_constants )],
-		only_constants => [keys %_CONSTANTS],
-		make           => [qw( make_role where )],
-	},
-	installer => sub {
-		"namespace::clean"->import(
-			-cleanee => $_[0]{into},
-			grep { !ref } @{ $_[1] },
-		);
-		goto \&Sub::Exporter::default_installer;
-	},
-};
-
-my %ROLES;
+DEFINE_CONSTANTS:
 {
+	our %_CONSTANTS = (
+		BOOLEAN    => q[bool],
+		STRING     => q[""],
+		NUMBER     => q[0+],
+		REGEXP     => q[qr],
+		SMARTMATCH => q[~~],
+		map {; $_ => $_ } qw(
+			SCALAR ARRAY HASH CODE REF GLOB
+			LVALUE FORMAT IO VSTRING
+		)
+	);
+	require constant;
+	constant->import(\%_CONSTANTS);
+}
+
+EXPORTER:
+{
+	use base "Exporter::TypeTiny";
+	
+	our %_CONSTANTS;
+	our @EXPORT    = ( "does" );
+	our @EXPORT_OK = (
+		qw( does overloads blessed reftype looks_like_number make_role where custom ),
+		keys(%_CONSTANTS),
+	);
+	our %EXPORT_TAGS = (
+		default        => \@EXPORT,
+		constants      => [ "does", keys(%_CONSTANTS) ],
+		only_constants => [ keys(%_CONSTANTS) ],
+		make           => [ qw( make_role where ) ],
+	);
+	
+	sub _exporter_expand_sub
+	{
+		my $class = shift;
+		return custom => $class->_build_custom(@_[0,1]) if $_[0] eq "custom";
+		$class->SUPER::_exporter_expand_sub(@_);
+	}
+	
+	sub _exporter_validate_opts
+	{
+		require B;
+		my $class = shift;
+		$_[0]{exporter} ||= sub {
+			my $into = $_[0]{into};
+			my ($name, $sym) = @{ $_[1] };
+			for (grep ref, $into->can($name))
+			{
+				B::svref_2object($_)->STASH->NAME eq $into
+					and _croak("Refusing to overwrite local sub '$name' with export from $class");
+			}
+			"namespace::clean"->import(-cleanee => $_[0]{into}, $name);
+			no strict qw(refs);
+			no warnings qw(redefine prototype);
+			*{"$into\::$name"} = $sym;
+		}
+	}
+}
+
+ROLES: {
 	no warnings;
 	
-	my $io = "Type::Tiny"->new(constraint => sub { require IO::Detect; IO::Detect::is_filehandle($_) });
+	my $io = "Type::Tiny"->new(
+		display_name => "IO",
+		constraint   => sub { require IO::Detect; IO::Detect::is_filehandle($_) },
+	);
 	
-	%ROLES = (
+	our %_ROLES = (
 		SCALAR   => ( ScalarRef() | Ref->parameterize('SCALAR')  | Overload->parameterize('${}') ),
 		ARRAY    => ( ArrayRef()  | Ref->parameterize('ARRAY')   | Overload->parameterize('@{}') ),
 		HASH     => ( HashRef()   | Ref->parameterize('HASH')    | Overload->parameterize('%{}') ),
@@ -112,65 +143,71 @@ my %ROLES;
 		q[*{}]   => 'GLOB',
 		q[qr]    => 'Regexp',
 	);
-	while (my ($k, $v) = each %ROLES)
-		{ $ROLES{$k} = $ROLES{$v} unless ref $v }
-}
-
-sub overloads ($;$)
-{
-	unshift @_, ${+_lu} if @_ == 1;
-	return unless blessed $_[0];
-	goto \&overload::Method;
-}
-
-sub does ($;$)
-{
-	unshift @_, ${+_lu} if @_ == 1;
-	my ($thing, $role) = @_;
 	
-	no warnings;
-	if (my $test = $ROLES{$role})
+	while (my ($k, $v) = each %_ROLES) { $_ROLES{$k} = $_ROLES{$v} unless ref $v }
+}
+
+PUBLIC_FUNCTIONS:
+{
+	use Scalar::Util 1.24 qw( blessed reftype looks_like_number );
+	
+	sub overloads ($;$)
 	{
-		return !! $test->check($thing);
+		unshift @_, ${+_lu} if @_ == 1;
+		return unless blessed $_[0];
+		goto \&overload::Method;
 	}
 	
-	if (blessed $role and $role->can('check'))
+	sub does ($;$)
 	{
-		return !! $role->check($thing);
+		unshift @_, ${+_lu} if @_ == 1;
+		my ($thing, $role) = @_;
+		
+		no warnings;
+		our %_ROLES;
+		if (my $test = $_ROLES{$role})
+		{
+			return !! $test->check($thing);
+		}
+		
+		if (blessed $role and $role->can('check'))
+		{
+			return !! $role->check($thing);
+		}
+		
+		if (blessed $thing && $thing->can('DOES'))
+		{
+			return !! 1 if $thing->DOES($role);
+		}
+		elsif (UNIVERSAL::can($thing, 'can') && $thing->can('DOES'))
+		{
+			my $class = $thing;
+			return '0E0' if $class->DOES($role);
+		}
+		
+		return;
 	}
 	
-	if (blessed $thing && $thing->can('DOES'))
+	sub _build_custom
 	{
-		return !! 1 if $thing->DOES($role);
+		my ($class, $name, $arg) = @_;
+		my $role = $arg->{ -role } or confess MISSING_ROLE_MESSAGE;
+		
+		return sub (;$) {
+			push @_, $role;
+			goto \&does;
+		}
 	}
-	elsif (UNIVERSAL::can($thing, 'can') && $thing->can('DOES'))
+	
+	sub make_role
 	{
-		my $class = $thing;
-		return '0E0' if $class->DOES($role);
+		return "Scalar::Does::RoleChecker"->new(@_);
 	}
 	
-	return;
-}
-
-sub _build_custom
-{
-	my ($class, $name, $arg) = @_;
-	my $role = $arg->{ -role } or confess MISSING_ROLE_MESSAGE;
-	
-	return sub (;$) {
-		push @_, $role;
-		goto \&does;
+	sub where (&)
+	{
+		return +{ where => $_[0] };
 	}
-}
-
-sub make_role
-{
-	return "Scalar::Does::RoleChecker"->new(@_);
-}
-
-sub where (&)
-{
-	return +{ where => $_[0] };
 }
 
 "it does"

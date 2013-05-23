@@ -30,7 +30,7 @@ __END__
 
 =head1 NAME
 
-Scalar::Does::MooseTypes - additional constants for Scalar::Does, inspired by the built-in Moose type constraints (DEPRECATED)
+Scalar::Does::MooseTypes - (DEPRECATED) additional constants for Scalar::Does, inspired by the built-in Moose type constraints
 
 =head1 SYNOPSIS
 

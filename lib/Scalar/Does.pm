@@ -78,7 +78,6 @@ EXPORTER:
 		keys(%_CONSTANTS),
 	);
 	our %EXPORT_TAGS = (
-		default        => \@EXPORT,
 		constants      => [ "does", keys(%_CONSTANTS) ],
 		only_constants => [ keys(%_CONSTANTS) ],
 		make           => [ qw( make_role where ) ],
@@ -111,7 +110,8 @@ EXPORTER:
 	}
 }
 
-ROLES: {
+ROLES:
+{
 	no warnings;
 	
 	my $io = "Type::Tiny"->new(

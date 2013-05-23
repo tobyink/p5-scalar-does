@@ -11,26 +11,50 @@ BEGIN {
 	$IO::Detect::VERSION   = '0.102';
 }
 
-use namespace::clean 0.19 qw<>;
-use Sub::Exporter -setup => {
-	exports => [
+use namespace::clean 0.19;
+
+EXPORTER:
+{
+	use base "Exporter::TypeTiny";
+	
+	our %_CONSTANTS;
+	our @EXPORT    = qw( is_filehandle is_filename is_fileuri );
+	our @EXPORT_OK = (
 		qw( is_filehandle is_filename is_fileuri ),
 		qw( FileHandle FileName FileUri ),
-		ducktype      => \&_build_ducktype,
-		as_filehandle => \&_build_as_filehandle,
-	],
-	groups => {
-		default    => [qw( is_filehandle is_filename is_fileuri )],
+		qw( ducktype as_filehandle ),
+	);
+	our %EXPORT_TAGS = (
 		smartmatch => [qw( FileHandle FileName FileUri )],
-	},
-	installer => sub {
-		namespace::clean::->import(
-			-cleanee => $_[0]{into},
-			grep { !ref } @{ $_[1] },
-		);
-		goto \&Sub::Exporter::default_installer;
-	},
-};
+	);
+	
+	sub _exporter_expand_sub
+	{
+		my $class = shift;
+		return ducktype      => $class->_build_ducktype(@_[0,1])      if $_[0] eq "ducktype";
+		return as_filehandle => $class->_build_as_filehandle(@_[0,1]) if $_[0] eq "as_filehandle";
+		$class->SUPER::_exporter_expand_sub(@_);
+	}
+	
+	sub _exporter_validate_opts
+	{
+		require B;
+		my $class = shift;
+		$_[0]{exporter} ||= sub {
+			my $into = $_[0]{into};
+			my ($name, $sym) = @{ $_[1] };
+			for (grep ref, $into->can($name))
+			{
+				B::svref_2object($_)->STASH->NAME eq $into
+					and _croak("Refusing to overwrite local sub '$name' with export from $class");
+			}
+			"namespace::clean"->import(-cleanee => $_[0]{into}, $name);
+			no strict qw(refs);
+			no warnings qw(redefine prototype);
+			*{"$into\::$name"} = $sym;
+		}
+	}
+}
 
 use overload qw<>;
 use Scalar::Util qw< blessed openhandle reftype >;

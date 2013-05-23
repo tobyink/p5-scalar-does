@@ -38,7 +38,7 @@ BEGIN {
 			if (Scalar::Does::does($p, 'Regexp')){ $coderef = sub { $_[0] =~ $p } }
 			if (not ref $p)                      { $name    = $p }
 		}
-		Carp::confess("Cannot make role without checker coderef or regexp.") unless $coderef;
+		Carp::confess("Cannot make role without checker coderef or regexp") unless $coderef;
 		$class->SUPER::new(display_name => $name, constraint => $coderef);
 	}
 	sub code { shift->constraint };
@@ -54,6 +54,7 @@ use constant MISSING_ROLE_MESSAGE => (
 );
 
 use Carp             0     qw( confess );
+use Types::Standard  0.004 qw( -types );
 
 use namespace::clean 0.19;
 
@@ -73,7 +74,7 @@ use Sub::Exporter -setup => {
 		make           => [qw( make_role where )],
 	},
 	installer => sub {
-		namespace::clean::->import(
+		"namespace::clean"->import(
 			-cleanee => $_[0]{into},
 			grep { !ref } @{ $_[1] },
 		);
@@ -84,23 +85,26 @@ use Sub::Exporter -setup => {
 my %ROLES;
 {
 	no warnings;
+	
+	my $io = "Type::Tiny"->new(constraint => sub { require IO::Detect; IO::Detect::is_filehandle($_) });
+	
 	%ROLES = (
-		SCALAR   => sub { reftype($_) eq 'SCALAR'  or overloads($_, q[${}]) },
-		ARRAY    => sub { reftype($_) eq 'ARRAY'   or overloads($_, q[@{}]) },
-		HASH     => sub { reftype($_) eq 'HASH'    or overloads($_, q[%{}]) },
-		CODE     => sub { reftype($_) eq 'CODE'    or overloads($_, q[&{}]) },
-		REF      => sub { reftype($_) eq 'REF' },
-		GLOB     => sub { reftype($_) eq 'GLOB'    or overloads($_, q[*{}]) },
-		LVALUE   => sub { ref($_) eq 'LVALUE' },
-		FORMAT   => sub { reftype($_) eq 'FORMAT' },
-		IO       => sub { require IO::Detect; IO::Detect::is_filehandle($_) },
-		VSTRING  => sub { reftype($_) eq 'VSTRING' or ref($_) eq 'VSTRING' },
-		Regexp   => sub { reftype($_) eq 'Regexp'  or ref($_) eq 'Regexp'  or overloads($_, q[qr]) },
-		q[bool]  => sub { !blessed($_) or !overload::Overloaded($_) or overloads($_, q[bool]) },
-		q[""]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[""]) },
-		q[0+]    => sub { !ref($_)     or !overload::Overloaded($_) or overloads($_, q[0+]) },
-		q[<>]    => sub { require IO::Detect; overloads($_, q[<>]) or IO::Detect::is_filehandle($_) },
-		q[~~]    => sub { overloads($_, q[~~]) or not blessed($_) },
+		SCALAR   => ( ScalarRef() | Ref->parameterize('SCALAR')  | Overload->parameterize('${}') ),
+		ARRAY    => ( ArrayRef()  | Ref->parameterize('ARRAY')   | Overload->parameterize('@{}') ),
+		HASH     => ( HashRef()   | Ref->parameterize('HASH')    | Overload->parameterize('%{}') ),
+		CODE     => ( CodeRef()   | Ref->parameterize('CODE')    | Overload->parameterize('&{}') ),
+		REF      => ( Ref->parameterize('REF') ),
+		GLOB     => ( GlobRef()   | Ref->parameterize('GLOB')    | Overload->parameterize('*{}') ),
+		LVALUE   => ( Ref->parameterize('LVALUE') ),
+		FORMAT   => ( Ref->parameterize('FORMAT') ),
+		IO       => $io,
+		VSTRING  => ( Ref->parameterize('VSTRING') ),
+		Regexp   => ( RegexpRef() | Ref->parameterize('Regexp')  | Overload->parameterize('qr') ),
+		bool     => ( Value() | Overload->complementary_type | Overload->parameterize('bool') ),
+		q[""]    => ( Value() | Overload->complementary_type | Overload->parameterize('""') ),
+		q[0+]    => ( Value() | Overload->complementary_type | Overload->parameterize('0+') ),
+		q[<>]    => ( Overload->parameterize('<>') | $io ),
+		q[~~]    => ( Overload->parameterize('~~') | Object->complementary_type ),
 		q[${}]   => 'SCALAR',
 		q[@{}]   => 'ARRAY',
 		q[%{}]   => 'HASH',
@@ -127,8 +131,7 @@ sub does ($;$)
 	no warnings;
 	if (my $test = $ROLES{$role})
 	{
-		local $_ = $thing;
-		return !! $test->($thing);
+		return !! $test->check($thing);
 	}
 	
 	if (blessed $role and $role->can('check'))
@@ -162,7 +165,7 @@ sub _build_custom
 
 sub make_role
 {
-	return Scalar::Does::RoleChecker::->new(@_);
+	return "Scalar::Does::RoleChecker"->new(@_);
 }
 
 sub where (&)

@@ -44,9 +44,20 @@ BEGIN {
 	sub code { shift->constraint };
 }
 
-use constant \%_CONSTANTS;
+sub _lu {
+	require lexical::underscore;
+	goto \&lexical::underscore;
+}
+
+use constant MISSING_ROLE_MESSAGE => (
+	"Please supply a '-role' argument when exporting custom functions, died"
+);
+
 use Carp             0     qw( confess );
-use namespace::clean 0.19  qw();
+
+use namespace::clean 0.19;
+
+use constant \%_CONSTANTS;
 use Scalar::Util     1.24  qw( blessed reftype looks_like_number );
 
 use Sub::Exporter -setup => {
@@ -69,11 +80,6 @@ use Sub::Exporter -setup => {
 		goto \&Sub::Exporter::default_installer;
 	},
 };
-
-sub _lu {
-	require lexical::underscore;
-	goto \&lexical::underscore;
-}
 
 my %ROLES;
 {
@@ -142,10 +148,6 @@ sub does ($;$)
 	
 	return;
 }
-
-use constant MISSING_ROLE_MESSAGE => (
-	"Please supply a '-role' argument when exporting custom functions, died"
-);
 
 sub _build_custom
 {

@@ -388,7 +388,7 @@ from L<Moose::Util::TypeConstraints>, so don't worry about conflicts.
 
 =head2 Constants
 
-The following constants may be used for convenience:
+The following constants may be exported for convenience:
 
 =over
 
@@ -426,7 +426,7 @@ The following constants may be used for convenience:
 
 =head2 Export
 
-By default, only C<does> is exported. This module uses L<Sub::Exporter>, so
+By default, only C<does> is exported. This module uses L<Exporter::TypeTiny>, so
 functions can be renamed:
 
   use Scalar::Does does => { -as => 'performs_role' };
@@ -536,6 +536,9 @@ Moose type constraint objects above.
   use Scalar::Does qw(does);
   
   does(123, Int);   # true
+
+In fact, L<Type::Tiny> and related libraries are used extensively in the
+internals of Scalar::Does 0.200+.
 
 See also:
 L<Type::Tiny>,

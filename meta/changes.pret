@@ -136,3 +136,13 @@
 	changeset [
 		item "Scalar::Util version in lib/Scalar/Does.pm and meta/makefile.pret should match."^^Bugfix;
 	].
+
+`Scalar-Does 0.200 cpan:TOBYINK`
+	issued  2013-05-24;
+	changeset [
+		item "Use Type::Tiny and Types::Standard to perform type checking for built-in Scalar::Does roles, and also Scalar::Does::MooseTypes roles."^^Update;
+		item "Deprecate Scalar::Does::MooseTypes."^^Update;
+		item "Use Exporter::TypeTiny instead of Sub::Exporter."^^Update;
+		item "Document relationship with Type::Tiny."^^Documentation;
+		item "Skip tests involving given/when, smart match, and lexical $_ in Perl >= 5.17."^^Packaging;
+	].

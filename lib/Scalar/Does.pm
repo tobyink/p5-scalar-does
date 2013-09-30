@@ -69,7 +69,7 @@ DEFINE_CONSTANTS:
 
 EXPORTER:
 {
-	use base "Exporter::TypeTiny";
+	use base "Exporter::Tiny";
 	
 	our %_CONSTANTS;
 	our @EXPORT    = ( "does" );
@@ -83,6 +83,7 @@ EXPORTER:
 		make           => [ qw( make_role where ) ],
 	);
 	
+	# this can probably be replaced with Exporter::Tiny's new generator stuff
 	sub _exporter_expand_sub
 	{
 		my $class = shift;
@@ -426,7 +427,7 @@ The following constants may be exported for convenience:
 
 =head2 Export
 
-By default, only C<does> is exported. This module uses L<Exporter::TypeTiny>, so
+By default, only C<does> is exported. This module uses L<Exporter::Tiny>, so
 functions can be renamed:
 
   use Scalar::Does does => { -as => 'performs_role' };

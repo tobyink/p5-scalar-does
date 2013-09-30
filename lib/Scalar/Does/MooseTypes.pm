@@ -6,7 +6,7 @@ use warnings;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.200';
 
-use base "Exporter::TypeTiny";
+use base "Exporter::Tiny";
 
 BEGIN {
 	my @NAMES = qw(

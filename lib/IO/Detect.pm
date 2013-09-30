@@ -15,7 +15,7 @@ use namespace::clean 0.19;
 
 EXPORTER:
 {
-	use base "Exporter::TypeTiny";
+	use base "Exporter::Tiny";
 	
 	our %_CONSTANTS;
 	our @EXPORT    = qw( is_filehandle is_filename is_fileuri );

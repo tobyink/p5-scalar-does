@@ -8,6 +8,7 @@
 	:runtime-requirement  [ :on "Scalar::Util 1.24"^^:CpanId ];
 	:runtime-requirement  [ :on "Type::Tiny 0.004"^^:CpanId ];
 	:runtime-requirement  [ :on "lexical::underscore"^^:CpanId ];
+	:runtime-requirement  [ :on "Exporter::Tiny 0.026"^^:CpanId ];
 	:test-requirement     [ :on "Test::NoWarnings 0"^^:CpanId ];
 	:test-requirement     [ :on "Test::Requires 0.06"^^:CpanId ];
 	:test-requirement     [ :on "Test::More 0.96"^^:CpanId ];

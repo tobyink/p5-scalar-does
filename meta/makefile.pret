@@ -1,15 +1,15 @@
 # This file provides instructions for packaging.
 
+@prefix : <http://ontologi.es/doap-deps#> .
+
 `Scalar-Does`
-	perl_version_from m`Scalar::Does`;
-	version_from      m`Scalar::Does`;
-	readme_from       m`Scalar::Does`;
-	requires          p`namespace::clean 0.19`;
-	requires          p`URI::file`;
-	requires          p`Scalar::Util 1.24`;
-	requires          p`Type::Tiny 0.004`;
-	requires          p`lexical::underscore`;
-	test_requires     p`Test::NoWarnings 0`;
-	test_requires     p`Test::Requires`;
-	test_requires     p`URI`;
-.
+	:runtime-requirement  [ :on "namespace::clean 0.19"^^:CpanId ];
+	:runtime-requirement  [ :on "URI::file"^^:CpanId ];
+	:runtime-requirement  [ :on "Scalar::Util 1.24"^^:CpanId ];
+	:runtime-requirement  [ :on "Type::Tiny 0.004"^^:CpanId ];
+	:runtime-requirement  [ :on "lexical::underscore"^^:CpanId ];
+	:test-requirement     [ :on "Test::NoWarnings 0"^^:CpanId ];
+	:test-requirement     [ :on "Test::Requires 0.06"^^:CpanId ];
+	:test-requirement     [ :on "Test::More 0.96"^^:CpanId ];
+	:test-requirement     [ :on "URI"^^:CpanId ];
+	.

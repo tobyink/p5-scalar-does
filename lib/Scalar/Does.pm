@@ -83,14 +83,6 @@ EXPORTER:
 		make           => [ qw( make_role where ) ],
 	);
 	
-	# this can probably be replaced with Exporter::Tiny's new generator stuff
-	sub _exporter_expand_sub
-	{
-		my $class = shift;
-		return custom => $class->_build_custom(@_[0,1]) if $_[0] eq "custom";
-		$class->SUPER::_exporter_expand_sub(@_);
-	}
-	
 	sub _exporter_validate_opts
 	{
 		require B;
@@ -189,7 +181,7 @@ PUBLIC_FUNCTIONS:
 		return;
 	}
 	
-	sub _build_custom
+	sub _generate_custom
 	{
 		my ($class, $name, $arg) = @_;
 		my $role = $arg->{ -role } or confess MISSING_ROLE_MESSAGE;

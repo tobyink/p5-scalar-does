@@ -146,3 +146,10 @@
 		item "Document relationship with Type::Tiny."^^Documentation;
 		item "Skip tests involving given/when, smart match, and lexical $_ in Perl >= 5.17."^^Packaging;
 	].
+
+`Scalar-Does 0.201 cpan:TOBYINK`
+	issued  2013-09-30;
+	changeset [
+		item "Use Exporter::Tiny instead of Exporter::TypeTiny."^^Update;
+		item "Use Dist::Inkt."^^Packaging;
+	].

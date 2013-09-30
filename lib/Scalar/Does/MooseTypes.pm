@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.200';
+our $VERSION   = '0.201';
 
 use base "Exporter::Tiny";
 

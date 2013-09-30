@@ -8,7 +8,7 @@ use if $] < 5.010, 'UNIVERSAL::DOES';
 
 BEGIN {
 	$IO::Detect::AUTHORITY = 'cpan:TOBYINK';
-	$IO::Detect::VERSION   = '0.200';
+	$IO::Detect::VERSION   = '0.201';
 }
 
 use namespace::clean 0.19;
@@ -169,7 +169,7 @@ sub _generate_as_filehandle
 	package IO::Detect::SmartMatcher;
 	BEGIN {
 		$IO::Detect::SmartMatcher::AUTHORITY = 'cpan:TOBYINK';
-		$IO::Detect::SmartMatcher::VERSION   = '0.200';
+		$IO::Detect::SmartMatcher::VERSION   = '0.201';
 	}
 	use Scalar::Util qw< blessed >;
 	use overload (); no warnings 'overload';  # '~~' unavailable in Perl 5.8

@@ -8,14 +8,14 @@ use if $] < 5.010, 'UNIVERSAL::DOES';
 METADATA:
 {
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::VERSION   = '0.200';
+	$Scalar::Does::VERSION   = '0.201';
 }
 
 UTILITY_CLASS:
 {
 	package Scalar::Does::RoleChecker;
 	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::RoleChecker::VERSION   = '0.200';
+	$Scalar::Does::RoleChecker::VERSION   = '0.201';
 	use base "Type::Tiny";
 	sub new {
 		my $class = shift;

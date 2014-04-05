@@ -153,3 +153,16 @@
 		item "Use Exporter::Tiny instead of Exporter::TypeTiny."^^Update;
 		item "Use Dist::Inkt."^^Packaging;
 	].
+
+`Scalar-Does 0.202 cpan:TOBYINK`
+	issued  2014-04-05;
+	changeset [
+		item [
+			a dcs:Bugfix;
+			label "Make t/iod-02filehandles.t clean up after itself.";
+			seealso <https://github.com/tobyink/p5-scalar-does/pull/1>;
+			dcs:fixes RT#91497;
+			dcs:blame cpan:PDCAWLEY;
+			dcs:thanks <urn:uuid:f4c99fd1-c557-4f57-b7eb-b15915c0745d>;
+		];
+	].

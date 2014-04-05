@@ -8,7 +8,7 @@ use if $] < 5.010, 'UNIVERSAL::DOES';
 
 BEGIN {
 	$IO::Detect::AUTHORITY = 'cpan:TOBYINK';
-	$IO::Detect::VERSION   = '0.201';
+	$IO::Detect::VERSION   = '0.202';
 }
 
 use namespace::clean 0.19;
@@ -169,7 +169,7 @@ sub _generate_as_filehandle
 	package IO::Detect::SmartMatcher;
 	BEGIN {
 		$IO::Detect::SmartMatcher::AUTHORITY = 'cpan:TOBYINK';
-		$IO::Detect::SmartMatcher::VERSION   = '0.201';
+		$IO::Detect::SmartMatcher::VERSION   = '0.202';
 	}
 	use Scalar::Util qw< blessed >;
 	use overload (); no warnings 'overload';  # '~~' unavailable in Perl 5.8
@@ -422,7 +422,7 @@ Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
 
 =head1 COPYRIGHT AND LICENCE
 
-This software is copyright (c) 2012-2013 by Toby Inkster.
+This software is copyright (c) 2012-2014 by Toby Inkster.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

@@ -22,8 +22,8 @@ cpan:TOBYINK
 	foaf:mbox  <mailto:tobyink@cpan.org>.
 
 cpan:PDCAWLEY
-	:name  "Piers Cawley".
+	foaf:name  "Piers Cawley".
 
 <urn:uuid:f4c99fd1-c557-4f57-b7eb-b15915c0745d>
-	:name  "Jon Jensen";
-	:mbox  <mailto:jon@endpoint.com>.
+	foaf:name  "Jon Jensen";
+	foaf:mbox  <mailto:jon@endpoint.com>.

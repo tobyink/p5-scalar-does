@@ -25,15 +25,17 @@ use Test::More;
 use FileHandle;
 use IO::File;
 use IO::Socket::INET;
+use File::Temp qw/tempdir/;
 
 use IO::Detect qw( is_filehandle FileHandle );
 
 plan skip_all => "only works on Linux" unless $^O =~ /linux/i;
 
 my $SLEEP = 5;
-my $FIFO  = "/tmp/myfifo";
 
-unlink $FIFO;
+my $tmpdir = tempdir( CLEANUP => 1 );
+my $FIFO  = "$tmpdir/myfifo";
+
 my $pid = fork;
 die "$0: fork" unless defined $pid;
 if ($pid == 0) {
@@ -95,3 +97,4 @@ if ($] >= 5.010 and $] < 5.017)
 }
 
 done_testing();
+

@@ -3,6 +3,7 @@
 @prefix : <http://ontologi.es/doap-deps#> .
 
 `Scalar-Does`
+	:runtime-requirement  [ :on "perl 5.008"^^:CpanId ];
 	:runtime-requirement  [ :on "namespace::clean 0.19"^^:CpanId ];
 	:runtime-requirement  [ :on "URI::file"^^:CpanId ];
 	:runtime-requirement  [ :on "Scalar::Util 1.24"^^:CpanId ];

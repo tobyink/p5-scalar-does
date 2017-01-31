@@ -33,6 +33,7 @@ use Test::Requires "List::MoreUtils";
 BEGIN {
 	plan skip_all => 'pure Perl List::MoreUtils generates warning under -w'
 		unless List::MoreUtils::_XScompiled();
+	plan tests => 1;
 };
 
 use Test::NoWarnings;
@@ -41,4 +42,3 @@ $^W = 1;
 require Scalar::Does;
 Scalar::Does::does(undef, 'ARRAY');
 
-done_testing(1);

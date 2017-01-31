@@ -8,14 +8,14 @@ use if $] < 5.010, 'UNIVERSAL::DOES';
 METADATA:
 {
 	$Scalar::Does::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::VERSION   = '0.202';
+	$Scalar::Does::VERSION   = '0.203';
 }
 
 UTILITY_CLASS:
 {
 	package Scalar::Does::RoleChecker;
 	$Scalar::Does::RoleChecker::AUTHORITY = 'cpan:TOBYINK';
-	$Scalar::Does::RoleChecker::VERSION   = '0.202';
+	$Scalar::Does::RoleChecker::VERSION   = '0.203';
 	use base "Type::Tiny";
 	sub new {
 		my $class = shift;
@@ -555,7 +555,7 @@ Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
 
 =head1 COPYRIGHT AND LICENCE
 
-This software is copyright (c) 2012-2014 by Toby Inkster.
+This software is copyright (c) 2012-2014, 2017 by Toby Inkster.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
